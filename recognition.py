@@ -1,7 +1,7 @@
 
 import cv2
 import numpy
-from insightface.app import FaceAnalysis
+from insightface.app import FaceAnalysis # type: ignore
 
 # init InsightFace
 app = FaceAnalysis(name="buffalo_l")
