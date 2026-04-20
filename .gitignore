@@ -1,0 +1,17 @@
+# byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+
+
+# Pyinstaller
+*.manifest
+*.spec
+
+# pyenv python configuration file
+.python-version
