@@ -1,0 +1,5 @@
+torchvision
+onnx
+onnxruntime
+numpy
+Pillow

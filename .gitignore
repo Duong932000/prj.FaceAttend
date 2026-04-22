@@ -15,3 +15,6 @@ __pycache__/
 
 # pyenv python configuration file
 .python-version
+
+# training output
+output/
