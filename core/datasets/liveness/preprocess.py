@@ -4,7 +4,7 @@
 #       .;cccccccccccccccccccccc;           --------------
 #     .:cccccccccccccccccccccccccc:.        Project name :      prj.FaceAttend
 #   .;ccccccccccccc;.:dddl:.;ccccccc;.      Author       :      Nguyen Dac Duong
-#  .:ccccccccccccc;OWMKOOXMWd;ccccccc:.     File name    :      fpreprocess.py
+#  .:ccccccccccccc;OWMKOOXMWd;ccccccc:.     File name    :      preprocess.py
 # .:ccccccccccccc;KMMc;cc;xMMc;ccccccc:.    Description  :      
 # ,cccccccccccccc;MMM.;cc;;WW:;cccccccc,    --------------
 # :cccccccccccccc;MMM.;cccccccccccccccc:
