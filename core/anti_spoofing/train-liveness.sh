@@ -2,7 +2,7 @@
 
 set -e
 
-IMAGE_NAME="face=attendance-liveness-train"
+IMAGE_NAME="face-attendance-liveness-train"
 DOCKERFILE_PATH="core/deploy/Dockerfile"
 
 DATASET_PATH="core/datasets/liveness"

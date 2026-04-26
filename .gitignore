@@ -1,4 +1,5 @@
 # byte-compiled / optimized / DLL files
+.venv/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -18,3 +19,6 @@ __pycache__/
 
 # training output
 output/
+
+# model extension
+*.pth

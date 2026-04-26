@@ -1,0 +1,14 @@
+dataset_path: ~/ml-dataset/processed-face-mask
+
+input_size: 112
+batch_size: 32
+epochs: 20
+learning_rate: 0.001
+
+num_classes: 5
+ 
+device: cuda
+
+model:
+  name: mobilenetv3_small
+  pretrained: true

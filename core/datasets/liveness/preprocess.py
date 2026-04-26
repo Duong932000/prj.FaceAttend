@@ -23,63 +23,84 @@
 
 import os
 import shutil
-import pandas as pd
 import random
-
-# =========================
-# CONFIG
-# =========================
-CSV_PATH = "/home/dacduong/ml-data/kaggle/anti-spoofing-live/real_30.csv"
-IMG_DIR  = "/home/dacduong/ml-data/kaggle/anti-spoofing-live/sample"
-
-OUT_DIR  = "/tmp/liveness_dataset_processed"
-
-TRAIN_SPLIT = 0.8
-
-# =========================
-# SETUP
-# =========================
-def create_dirs():
-    for split in ["train", "val"]:
-        for cls in ["real", "fake"]:
-            os.makedirs(os.path.join(OUT_DIR, split, cls), exist_ok=True)
+from pathlib import Path
 
 
-def main():
-    df = pd.read_csv(CSV_PATH)
+class FaceMaskDatasetPreprocessor:
+    def __init__(self, raw_dataset_dir, output_dir, train_split=0.8, seed=42):
+        self.raw_dataset = Path(raw_dataset_dir).expanduser()
+        self.output_dir = Path(output_dir).expanduser()
+        self.train_split = train_split
+        self.seed= seed
 
-    # shuffle dataset
-    df = df.sample(frac=1).reset_index(drop=True)
+        self.with_mask_dir = self.raw_dataset / "with_mask"
+        self.without_mask_dir = self.raw_dataset / "without_mask"
 
-    split_idx = int(len(df) * TRAIN_SPLIT)
+        self.class_map = {
+            "no_mask": self.without_mask_dir,
+            "mask": self.with_mask_dir / "Mask",
+            "mask_chin": self.with_mask_dir / "Mask_Chin",
+            "mask_mouth_chin": self.with_mask_dir / "Mask_Mouth_Chin",
+            "mask_nose_mouth": self.with_mask_dir / "Mask_Nose_Mouth",
+        }
 
-    train_df = df[:split_idx]
-    val_df   = df[split_idx:]
+    def create_dir(self):
 
-    process_split(train_df, "train")
-    process_split(val_df, "val")
+        for split in ["train", "val"]:
+            for cls in self.class_map.keys():
+                (self.output_dir / split / cls).mkdir(parents=True, exist_ok=True)
 
-    print("Preprocessing done!")
+    def split_and_copy(self, files, class_name):
 
+        random.shuffle(files)
 
-def process_split(df, split):
-    for _, row in df.iterrows():
+        split_idx = int(len(files) * self.train_split)
+        train_files = files[:split_idx]
+        val_files = files[split_idx:]
 
-        img_name = row["image"]
-        label    = row["label"]
+        for f in train_files:
+            dest_train = self.output_dir / "train" / class_name / f.name
+            shutil.copy(f, dest_train)
 
-        src = os.path.join(IMG_DIR, img_name)
+        for f in val_files:
+            dest_val = self.output_dir / "val" / class_name / f.name
+            shutil.copy(f, dest_val)
 
-        if not os.path.exists(src):
-            continue
+    def process_class(self, class_name, path):
 
-        cls = "real" if label == 1 else "fake"
+        if not path.exists():
+            print(f"Skip missing folder: {path}")
+            return
+        
+        files = list(path.glob("*.*"))
+        print(f"{class_name}: {len(files)} images")
 
-        dst = os.path.join(OUT_DIR, split, cls, img_name)
-        if not os.path.exists(dst):
-            os.symlink(src, dst)
+        self.split_and_copy(files, class_name)
+
+    def run(self):
+
+        random.seed(self.seed)
+
+        self.create_dir()
+        
+        for class_name, path in self.class_map.items():
+            self.process_class(class_name, path)
+        
+        print("FaceMask Detection preprocessing completed!")
 
 
 if __name__ == "__main__":
-    create_dirs()
-    main()
+
+    RAW_DATASET = Path("~/ml-dataset/facemask-detection").expanduser()
+    OUTPUT_DIR = Path("~/ml-dataset/processed-face-mask").expanduser()
+
+    try:
+        processor = FaceMaskDatasetPreprocessor(
+            raw_dataset_dir=RAW_DATASET,
+            output_dir=OUTPUT_DIR,
+        )
+        processor.run()
+
+    except Exception as e:
+        print(f"Error during dataset preprocessing: {e}")
