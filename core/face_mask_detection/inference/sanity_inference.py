@@ -21,6 +21,8 @@
 #########################################################
 
 
+from logging import config
+
 import torch
 import cv2
 import numpy as np
@@ -40,13 +42,13 @@ CLASS_NAMES = [
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def load_model(weight_path):
+def load_model(model_output_path):
     """
     Load the pre-trained model from the specified path.
     """
 
     model = get_model(num_classes=len(CLASS_NAMES), pretrained=False)
-    model.load_state_dict(torch.load(weight_path, map_location=device))
+    model.load_state_dict(torch.load(model_output_path, map_location=device))
     model.to(device)
     model.eval()
     return model
@@ -138,12 +140,16 @@ def print_table(results, acc):
 
 if __name__ == "__main__":
 
-    BASE_DIR = Path(__file__).resolve().parents[1]
+    model_name = "face_mask_model.pth"
+    ROOT_DIR = Path(__file__).resolve().parents[3]
 
-    weight_path = BASE_DIR / "weights" / "best_mask_model.pth"
-    dataset_test_dir = BASE_DIR / "datasets"
+    # get model output path
+    model_output_path = ROOT_DIR / "output" / "face_mask_detection" / model_name
 
-    model = load_model(weight_path)
+    # dataset test path
+    dataset_test_dir = ROOT_DIR / "core" / "face_mask_detection" / "datasets"
+
+    model = load_model(model_output_path)
     results, acc = test_samples(model, dataset_test_dir)
 
     print_table(results, acc)
