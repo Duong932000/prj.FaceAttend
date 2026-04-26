@@ -4,5 +4,6 @@ onnx
 onnxruntime
 numpy
 opencv-python
+matplotlib
 PyYAML
 tqdm

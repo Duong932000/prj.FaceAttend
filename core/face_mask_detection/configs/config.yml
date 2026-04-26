@@ -1,8 +1,10 @@
+face_mask_model_name: face_mask_model.pth
 dataset_path: ~/ml-dataset/processed-face-mask
+model_output_dir: output/face_mask_detection
 
 input_size: 112
 batch_size: 32
-epochs: 20
+epochs: 10
 learning_rate: 0.001
 
 num_classes: 5
