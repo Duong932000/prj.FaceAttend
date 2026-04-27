@@ -21,7 +21,6 @@
 #########################################################
 
 
-from logging import config
 
 import torch
 import cv2

@@ -1,0 +1,34 @@
+{
+    "model_name": "face_mask_model.pth",
+    "model_type": "MobileNetV3",
+    "num_classes": 5,
+    "classes": [
+        "mask",
+        "mask_chin",
+        "mask_mouth_chin",
+        "mask_nose_mouth",
+        "no_mask"
+    ],
+    "training": {
+        "epochs": 20,
+        "learning_rate": 0.001,
+        "batch_size": 32,
+        "device": "cuda"
+    },
+    "dataset": {
+        "path": "~/ml-dataset/processed-face-mask",
+        "train_size": 10778,
+        "val_size": 2696
+    },
+    "performance": {
+        "best_val_accuracy": 0.9981,
+        "final_accuracy": 0.9963
+    },
+    "time": {
+        "start": "2026-04-27T10:16:48.574183",
+        "end": "2026-04-27T10:35:02.998258",
+        "duration_sec": 1094.42
+    },
+    "author": "Duong",
+    "created_at": "2026-04-27T10:35:02.998300"
+}

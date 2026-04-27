@@ -22,125 +22,47 @@
 
 
 import os
+import json
+import time
 import yaml
 import torch
-import matplotlib.pyplot as plt
-
 from pathlib import Path
-from dataloaders.facemask_dataloader import get_dataloaders
+from datetime import datetime
+
 from models.MobileNetV3 import get_model
+from evaluation.plot import plot_training_curve
+from dataloaders.facemask_dataloader import get_dataloaders
+from evaluation.eval import evaluate, evaluate_detailed, display_evaluation_report
 
 ROOT_DIR = Path(__file__).resolve().parents[3]
 
-def evaluate(model, dataloader, device):
-
-    model.eval()
-
-    correct = 0
-    total = 0
-
-    with torch.no_grad():
-        for images, labels in dataloader:
-            images, labels = images.to(device), labels.to(device)
-
-            outputs = model(images)
-            preds = torch.argmax(outputs, dim=1)
-
-            correct += (preds == labels).sum().item()
-            total += labels.size(0)
-
-    return correct / total if total > 0 else 0
-
-def evaluate_detailed(model, dataloader, device, class_names):
-
-    model.eval()
-
-    num_classes = len(class_names)
-    conf_matrix = torch.zeros(num_classes, num_classes, dtype=torch.int32)
-
-    correct = 0
-    total = 0
-
-    with torch.no_grad():
-        for images, labels in dataloader:
-            images, labels = images.to(device), labels.to(device)
-
-            outputs = model(images)
-            preds = torch.argmax(outputs, dim=1)
-
-            for t, p in zip(labels.view(-1), preds.view(-1)):
-                conf_matrix[t.long(), p.long()] += 1
-
-            correct += (preds == labels).sum().item()
-            total += labels.size(0)
-
-    acc = correct / total if total > 0 else 0
-
-    return acc, conf_matrix
-
-def display_evaluation_report(conf_matrix, class_names, acc):
-
-    print("\n=== Evaluation Report ===")
-    print(f"{'Class':20} {'Precision':10} {'Recall':10} {'Support':10}")
-    print("-" * 60)
-
-    for i in range(len(class_names)):
-        TP = conf_matrix[i, i].item()
-        FP = conf_matrix[:, i].sum().item() - TP
-        FN = conf_matrix[i, :].sum().item() - TP
-        support = conf_matrix[i, :].sum().item()
-
-        precision = TP / (TP + FP) if (TP + FP) > 0 else 0
-        recall = TP / (TP + FN) if (TP + FN) > 0 else 0
-
-        print(f"{class_names[i]:20} {precision:<10.4f} {recall:<10.4f} {support:<10}")
-
-    print("-" * 60)
-    print(f"Overall Accuracy: {acc:.4f}")
-
-def plot_training(history, save_path):
-
-    epochs = range(1, len(history["loss"]) + 1)
-
-    plt.figure()
-    plt.plot(epochs, history["loss"], label="Train Loss")
-    plt.plot(epochs, history["val_acc"], label="Val Accuracy")
-
-    plt.xlabel("Epoch")
-    plt.ylabel("Value")
-    plt.title("Training Curve")
-    plt.legend()
-
-    plt.savefig(save_path)
-    plt.close()
-
-    print(f"Training chart saved at: {save_path}")
-
 def train(config_path):
 
-    # Load config.yml
+    start_time = time.time()
+
     with open(config_path, "r") as f:
         config = yaml.safe_load(f)
 
     device = torch.device(config["device"] if torch.cuda.is_available() else "cpu")
 
-    # Data
+    # get data loader
     train_loader, val_loader = get_dataloaders(config)
 
-    print("Class mapping:", train_loader.dataset.classes)
+    # get class names
+    class_names = train_loader.dataset.classes
+    print("Class mapping:", class_names)
 
-    # Get Model
+    # get model
     model = get_model(config["num_classes"], config["model"]["pretrained"])
     model.to(device)
 
-    # Loss and Optimizer
+    # training setup
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=config["learning_rate"])
 
     epochs = config["epochs"]
     best_acc = 0.0
 
-    # Output path
     model_output_dir = ROOT_DIR / config["model_output_dir"]
     model_output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -150,8 +72,8 @@ def train(config_path):
         "loss": [],
         "val_acc": []
     }
-    
-    # training loop
+
+    # Training loop
     for epoch in range(epochs):
 
         model.train()
@@ -181,16 +103,56 @@ def train(config_path):
             torch.save(model.state_dict(), model_output_path)
             print(f"New best model saved (Accuracy: {best_acc:.4f})")
 
-    print("\nTraining completed!")
-    print(f"Best Validation Accuracy: {best_acc:.4f}")
-
-    class_names = train_loader.dataset.classes
+    # Final evaluation
     acc, conf_matrix = evaluate_detailed(model, val_loader, device, class_names)
     display_evaluation_report(conf_matrix, class_names, acc)
 
-    # Save chart
+    # Plot training curve
     chart_path = model_output_dir / "training_curve.png"
-    plot_training(history, chart_path)
+    plot_training_curve(history, chart_path)
+
+    # Export model info
+    end_time = time.time()
+    model_info = {
+        "model_name": config["face_mask_model_name"],
+        "model_type": "MobileNetV3",
+        "num_classes": config["num_classes"],
+        "classes": class_names,
+
+        "training": {
+            "epochs": epochs,
+            "learning_rate": config["learning_rate"],
+            "batch_size": config["batch_size"],
+            "device": str(device),
+        },
+
+        "dataset": {
+            "path": config["dataset_path"],
+            "train_size": len(train_loader.dataset),
+            "val_size": len(val_loader.dataset),
+        },
+
+        "performance": {
+            "best_val_accuracy": round(best_acc, 4),
+            "final_accuracy": round(acc, 4),
+        },
+
+        "time": {
+            "start": datetime.fromtimestamp(start_time).isoformat(),
+            "end": datetime.fromtimestamp(end_time).isoformat(),
+            "duration_sec": round(end_time - start_time, 2)
+        },
+
+        "author": "Duong",
+        "created_at": datetime.now().isoformat()
+    }
+
+    json_path = model_output_dir / "model_info.json"
+    with open(json_path, "w") as f:
+        json.dump(model_info, f, indent=4)
+
+    print(f"\nModel info saved at: {json_path}")
+    print("Training completed!")
 
 if __name__ == "__main__":
 
