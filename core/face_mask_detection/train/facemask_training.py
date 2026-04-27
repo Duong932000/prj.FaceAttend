@@ -5,7 +5,7 @@
 #     .:cccccccccccccccccccccccccc:.        Project name :      prj.FaceAttend
 #   .;ccccccccccccc;.:dddl:.;ccccccc;.      Author       :      Nguyen Dac Duong
 #  .:ccccccccccccc;OWMKOOXMWd;ccccccc:.     File name    :      facemask-training.py
-# .:ccccccccccccc;KMMc;cc;xMMc;ccccccc:.    Description  :      
+# .:ccccccccccccc;KMMc;cc;xMMc;ccccccc:.    Description  :      Train face mask detection model
 # ,cccccccccccccc;MMM.;cc;;WW:;cccccccc,    --------------
 # :cccccccccccccc;MMM.;cccccccccccccccc:
 # :ccccccc;oxOOOo;MMM000k.;cccccccccccc:
@@ -21,7 +21,6 @@
 #########################################################
 
 
-import os
 import json
 import time
 import yaml
@@ -63,10 +62,10 @@ def train(config_path):
     epochs = config["epochs"]
     best_acc = 0.0
 
-    model_output_dir = ROOT_DIR / config["model_output_dir"]
-    model_output_dir.mkdir(parents=True, exist_ok=True)
+    model_pth_out_dir = ROOT_DIR / config["model_pth_out_dir"]
+    model_pth_out_dir.mkdir(parents=True, exist_ok=True)
 
-    model_output_path = model_output_dir / config["face_mask_model_name"]
+    model_output_path = model_pth_out_dir / config["face_mask_pth_name"]
 
     history = {
         "loss": [],
@@ -108,13 +107,13 @@ def train(config_path):
     display_evaluation_report(conf_matrix, class_names, acc)
 
     # Plot training curve
-    chart_path = model_output_dir / "training_curve.png"
+    chart_path = model_pth_out_dir / "training_curve.png"
     plot_training_curve(history, chart_path)
 
     # Export model info
     end_time = time.time()
     model_info = {
-        "model_name": config["face_mask_model_name"],
+        "model_name": config["face_mask_pth_name"],
         "model_type": "MobileNetV3",
         "num_classes": config["num_classes"],
         "classes": class_names,
@@ -147,7 +146,7 @@ def train(config_path):
         "created_at": datetime.now().isoformat()
     }
 
-    json_path = model_output_dir / "model_info.json"
+    json_path = model_pth_out_dir / "model_info.json"
     with open(json_path, "w") as f:
         json.dump(model_info, f, indent=4)
 

@@ -1,6 +1,10 @@
-face_mask_model_name: face_mask_model.pth
+face_mask_pth_name: face_mask_model.pth
+face_mask_onnx_name: face_mask_model.onnx
+
 dataset_path: ~/ml-dataset/processed-face-mask
-model_output_dir: output/face_mask_detection
+
+model_pth_out_dir: output/face_mask_detection/pth
+model_onnx_out_dir: output/face_mask_detection/onnx
 
 input_size: 112
 batch_size: 32

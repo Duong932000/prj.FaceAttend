@@ -2,6 +2,7 @@ torch
 torchvision
 onnx
 onnxruntime
+onnxscript
 numpy
 opencv-python
 matplotlib
