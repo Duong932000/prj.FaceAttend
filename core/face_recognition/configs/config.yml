@@ -1,0 +1,9 @@
+model_name: buffalo_l
+device: cuda
+
+similarity_threshold: 0.5
+
+database:
+  embedding_path: database/embeddings/embeddedings.npy
+  metadata_path: database/metadata.json
+  use_faiss: true

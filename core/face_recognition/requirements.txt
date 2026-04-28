@@ -1,0 +1,6 @@
+insightface
+onnxruntime
+numpy
+opencv-python
+PyYAML
+faiss-cpu

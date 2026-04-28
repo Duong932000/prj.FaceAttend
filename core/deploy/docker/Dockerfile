@@ -15,4 +15,3 @@ RUN uv pip install --system --no-cache \
 
 # run training + export
 CMD ["sh", "-c", "python core/train/training-loops/liveness/liveness-training.py && python core/train/export/liveness/export_onnx.py"]
-
