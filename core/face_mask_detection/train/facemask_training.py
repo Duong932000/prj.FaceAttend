@@ -28,10 +28,10 @@ import torch
 from pathlib import Path
 from datetime import datetime
 
-from models.MobileNetV3 import get_model
-from evaluation.plot import plot_training_curve
-from dataloaders.facemask_dataloader import get_dataloaders
-from evaluation.eval import evaluate, evaluate_detailed, display_evaluation_report
+from core.face_mask_detection.models.MobileNetV3 import get_model
+from core.face_mask_detection.evaluation.plot import plot_training_curve
+from core.face_mask_detection.dataloaders.facemask_dataloader import get_dataloaders
+from core.face_mask_detection.evaluation.eval import evaluate, evaluate_detailed, display_evaluation_report
 
 ROOT_DIR = Path(__file__).resolve().parents[3]
 

@@ -1,0 +1,12 @@
+[build-system]
+requires = ["hatching"]
+build-backend = "hatching.build"
+
+[project]
+name = "prj.faceattend"
+version = "0.1.0"
+description = "Real time attendance management system based on face recognition with facial fetures techniques"
+dependencies = [
+    "torch>=2.2.2",
+    "numpy>=1.26"
+]
