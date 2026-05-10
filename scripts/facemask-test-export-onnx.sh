@@ -8,4 +8,4 @@ echo "Activating virtual environment..."
 source .venv/bin/activate
 
 echo "Test and compare onxx and pth model after exporting ..."
-python -m export.test_export_onnx
+python -m core.face_mask_detection.export.test_export_onnx # module mode running

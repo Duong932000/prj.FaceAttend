@@ -63,6 +63,9 @@ source .venv/bin/activate
 echo "[INFO] Syncing project + deps..."
 uv sync
 
+echo "[INFO] Installing full OpenCV for GUI..."
+uv pip install --force-reinstall --no-deps opencv-python==4.9.0.80
+
 echo "[INFO] Installing project in editable mode ..."
 uv pip install -e . --no-deps
 

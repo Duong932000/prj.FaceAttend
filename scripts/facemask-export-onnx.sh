@@ -8,4 +8,4 @@ echo "Activating virtual environment..."
 source .venv/bin/activate
 
 echo "Starting inference for face mask detection..."
-python -m export.export_onnx
+python -m core.face_mask_detection.export.export_onnx # module mode running

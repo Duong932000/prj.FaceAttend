@@ -8,4 +8,4 @@ echo "Activting virtual environment..."
 source "$ROOT_DIR/.venv/bin/activate"
 
 echo "[TEST] Starting sanity inference for face mask detection..."
-python -m core.face_mask_detection.inference.sanity_inference
+python -m core.face_mask_detection.inference.sanity_inference # module mode running
