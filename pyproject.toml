@@ -1,12 +1,17 @@
-[build-system]
-requires = ["hatching"]
-build-backend = "hatching.build"
-
 [project]
-name = "prj.faceattend"
+name = "faceattend"
 version = "0.1.0"
-description = "Real time attendance management system based on face recognition with facial fetures techniques"
-dependencies = [
-    "torch>=2.2.2",
-    "numpy>=1.26"
+description = "Realtime Face Attendance System"
+authors = [{name = "Nguyen Dac Duong"}]
+license = {file = "LICENSE"}
+readme = "README.md"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["core"]
+include = [
+    "scripts/*.sh",    # shell scripts
 ]

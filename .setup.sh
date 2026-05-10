@@ -60,10 +60,15 @@ rm -rf .venv
 uv venv --python 3.10
 source .venv/bin/activate
 
+# Create uv.lock
+echo "[INFO] Compiling lockfile from requirements.txt ..."
+uv pip compile requirements.txt -o requirements.lock --universal
+
 # Install deps
-echo "[INFO] Installing Python deps ..."
-uv pip install --upgrade pip
-uv pip install --only-binary :all: -r requirements.txt || uv pip install -r requirements.txt
+echo "[INFO] Installing deps from lockfile ..."
+# uv pip install --upgrade pip
+# uv pip install --only-binary :all: -r requirements.txt || uv pip install -r requirements.txt
+uv pip sync requirements.lock
 
 echo "--- SETUP COMPLETED ---"
 echo "Activate with: source .venv/bin/activate"
