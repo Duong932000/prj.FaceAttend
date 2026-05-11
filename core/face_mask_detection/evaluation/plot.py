@@ -21,23 +21,39 @@
 #########################################################
 
 
+import numpy as np
+from pathlib import Path
 import matplotlib.pyplot as plt
 
 
-def plot_training_curve(history, save_path):
+def plot_training_curve(history: dict, save_path: Path):
+    """Plot loss/acc/LR curves"""
 
-    epochs = range(1, len(history["loss"]) + 1)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+    
+    epochs = range(1, len(history["train_loss"]) + 1)
 
-    plt.figure()
-    plt.plot(epochs, history["loss"], label="Train Loss")
-    plt.plot(epochs, history["val_acc"], label="Val Accuracy")
+    # Loss
+    ax1.plot(epochs, history["train_loss"], 'b-', label='Train Loss')
+    ax1.set_title('Training Loss')
+    ax1.set_xlabel('Epochs')
+    ax1.set_ylabel('Loss')
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
 
-    plt.xlabel("Epoch")
-    plt.ylabel("Value")
-    plt.title("Training Curve")
-    plt.legend()
+    # Accuracy
+    ax2.plot(epochs, history["val_acc"], 'g-', label='Val Accuracy', linewidth=2)
+    ax2.axhline(y=max(history["val_acc"]), color='r', linestyle='--', alpha=0.7, 
+                label=f'Best: {max(history["val_acc"]):.3f}')
+    ax2.set_title('Validation Accuracy')
+    ax2.set_xlabel('Epochs')
+    ax2.set_ylabel('Accuracy')
+    ax2.legend()
+    ax2.grid(True, alpha=0.3)
+    ax2.set_ylim(0, 1.05)
 
-    plt.savefig(save_path)
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.close()
 
-    print(f"Training chart saved at: {save_path}")
+    print(f"Training curve saved: {save_path}")

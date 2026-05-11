@@ -21,17 +21,52 @@
 #########################################################
 
 
+import torch
 import torch.nn as nn
-from torchvision.models import mobilenet_v3_small, MobileNet_V3_Small_Weights
+from typing import Optional
+from torchvision.models import mobilenet_v3_large, MobileNet_V3_Large_Weights
 
-def get_model(num_classes, pretrained=True):
+def get_model(num_classes: int,
+              pretrained: bool = True,
+              dropout_rate: float = 0.3,
+              freeze_backbone: bool = False,
+              width_mult: float = 1.0) -> nn.Module:
 
-    weights = MobileNet_V3_Small_Weights.DEFAULT if pretrained else None
+    # Load MobileNetV3 LARGE
+    weights = MobileNet_V3_Large_Weights.DEFAULT if pretrained else None
+    model = mobilenet_v3_large(weights=weights, width_mult=width_mult)
 
-    model = mobilenet_v3_small(weights=weights)
-    
-    # replace classifier
-    in_features = model.classifier[3].in_features
-    model.classifier[3] = nn.Linear(in_features, num_classes)
+    # Unfreeze all for full fine-tuning
+    for param in model.parameters():
+        param.requires_grad = True
+
+    # custom classifier (anti-overfit)
+    in_features = model.classifier[0].in_features
+
+    model.classifier = nn.Sequential(
+        # Global Average Pooling (already in features)
+        nn.Linear(in_features, 1024),      # Expand
+        nn.Hardswish(),                    # MobileNetV3 activation
+        nn.Dropout(dropout_rate),          # Dropout 30%
+        
+        nn.Linear(1024, 512),
+        nn.Hardswish(),
+        nn.Dropout(dropout_rate * 0.5),
+        
+        nn.Linear(512, num_classes)        # Final output
+    )
+
+    # Optional: Freeze backbone (early training)
+    if freeze_backbone:
+        for param in model.features.parameters():
+            param.requires_grad = False
+        print("Backbone frozen - only classifier training")
+
+    print(f"MobileNetV3-Large created:")
+    print(f"   - Classes: {num_classes}")
+    print(f"   - Width: {width_mult}")
+    print(f"   - Dropout: {dropout_rate}")
+    print(f"   - Backbone frozen: {freeze_backbone}")
+    print(f"   - Params: {sum(p.numel() for p in model.parameters() if p.requires_grad)/1e6:.1f}M trainable")
 
     return model

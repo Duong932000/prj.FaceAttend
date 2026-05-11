@@ -22,70 +22,69 @@
 
 
 import torch
+import numpy as np
 
 
-def evaluate(model, dataloader, device):
+def evaluate(model: torch.nn.Module, dataloader, device: torch.device) -> float:
+    """Simple accuracy"""
 
     model.eval()
-    correct = 0
-    total = 0
-
+    correct, total = 0, 0
+    
     with torch.no_grad():
         for images, labels in dataloader:
             images, labels = images.to(device), labels.to(device)
-
             outputs = model(images)
             preds = torch.argmax(outputs, dim=1)
-
+            
             correct += (preds == labels).sum().item()
             total += labels.size(0)
+    
+    return correct / total
 
-    return correct / total if total > 0 else 0
-
-def evaluate_detailed(model, dataloader, device, class_names):
+def evaluate_detailed(model: torch.nn.Module, dataloader, device: torch.device, 
+                     class_names: list) -> tuple[float, torch.Tensor]:
+    """Full metrics + confusion matrix"""
 
     model.eval()
-
     num_classes = len(class_names)
-    conf_matrix = torch.zeros(num_classes, num_classes, dtype=torch.int32)
-
-    correct = 0
-    total = 0
-
+    conf_matrix = torch.zeros(num_classes, num_classes, dtype=torch.int32, device=device)
+    correct, total = 0, 0
+    
     with torch.no_grad():
         for images, labels in dataloader:
             images, labels = images.to(device), labels.to(device)
-
             outputs = model(images)
             preds = torch.argmax(outputs, dim=1)
-
+            
             for t, p in zip(labels.view(-1), preds.view(-1)):
-                conf_matrix[t.long(), p.long()] += 1
-
+                conf_matrix[t, p] += 1
+            
             correct += (preds == labels).sum().item()
             total += labels.size(0)
+    
+    acc = correct / total
 
-    acc = correct / total if total > 0 else 0
+    return acc, conf_matrix.cpu()
 
-    return acc, conf_matrix
+def display_evaluation_report(conf_matrix: torch.Tensor, class_names: list, acc: float):
+    """Pretty metrics table"""
 
-def display_evaluation_report(conf_matrix, class_names, acc):
-
-    print("\n=== Evaluation Report ===")
-    print(f"{'Class':20} {'Precision':10} {'Recall':10} {'Support':10}")
-    print("-" * 60)
-
-    for i in range(len(class_names)):
+    print("\n=== EVALUATION REPORT ===")
+    print(f"Overall Accuracy: {acc:.4f}")
+    print(f"{'Class':<15} {'Prec':<8} {'Rec':<8} {'F1':<8} {'Supp':<8}")
+    print("-" * 55)
+    
+    for i, cls in enumerate(class_names):
         TP = conf_matrix[i, i].item()
         FP = conf_matrix[:, i].sum().item() - TP
         FN = conf_matrix[i, :].sum().item() - TP
         support = conf_matrix[i, :].sum().item()
-
+        
         precision = TP / (TP + FP) if (TP + FP) > 0 else 0
         recall = TP / (TP + FN) if (TP + FN) > 0 else 0
-
-        print(f"{class_names[i]:20} {precision:<10.4f} {recall:<10.4f} {support:<10}")
-
-    print("-" * 60)
-    print(f"Overall Accuracy: {acc:.4f}")
-
+        f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+        
+        print(f"{cls:<15} {precision:<7.3f} {recall:<7.3f} {f1:<7.3f} {support:<7}")
+    
+    print("-" * 55)

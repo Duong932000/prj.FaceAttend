@@ -1,3 +1,4 @@
+
 face_mask_pth_name: face_mask_model.pth
 face_mask_onnx_name: face_mask_model.onnx
 
@@ -12,9 +13,23 @@ epochs: 20
 learning_rate: 0.001
 
 num_classes: 5
- 
 device: cuda
 
 model:
-  name: mobilenetv3_small
+  name: mobilenetv3_large
   pretrained: true
+
+weight_decay: 1e-4                # L2 regularization
+dropout_rate: 0.3                 # Classifier dropout
+label_smoothing: 0.1              # Soft targets
+early_stopping_patience: 7        # Early stopping
+freeze_backbone: false            # False = full fine-tune
+width_mult: 1.0                   # Full capacity
+
+# Scheduler
+scheduler_patience: 3
+scheduler_factor: 0.5
+
+# Dataset stats
+mean: [0.485, 0.456, 0.406]
+std: [0.229, 0.224, 0.225]
