@@ -4,7 +4,7 @@
 #       .;cccccccccccccccccccccc;           --------------
 #     .:cccccccccccccccccccccccccc:.        Project name :      prj.FaceAttend
 #   .;ccccccccccccc;.:dddl:.;ccccccc;.      Author       :      Nguyen Dac Duong
-#  .:ccccccccccccc;OWMKOOXMWd;ccccccc:.     File name    :      align_face.py
+#  .:ccccccccccccc;OWMKOOXMWd;ccccccc:.     File name    :      generate_embeddings.py
 # .:ccccccccccccc;KMMc;cc;xMMc;ccccccc:.    Description  :      
 # ,cccccccccccccc;MMM.;cc;;WW:;cccccccc,    --------------
 # :cccccccccccccc;MMM.;cccccccccccccccc:
@@ -32,6 +32,7 @@ from core.face_recognition.utils.config import load_config
 class EmbeddingsGeneration:
     def __init__(self):
 
+        # load config
         root_dir, config = load_config()
         self.cfg = config["face_recognition"]
 
