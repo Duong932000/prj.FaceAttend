@@ -1,9 +1,16 @@
-model_name: buffalo_l
-device: cuda
+face_recognition:
+  model:
+    name: buffalo_l
+    det_size: [320, 320]
+    ctx_id: 0
 
-similarity_threshold: 0.5
+  alignment:
+    image_size: 112
 
-database:
-  embedding_path: database/embeddings/embeddedings.npy
-  metadata_path: database/metadata.json
-  use_faiss: true
+  paths:
+    config_path: core/face_recognition/configs/config.yml
+    output_root: output/face_recognition
+    raw_dataset: output/face_recognition/datasets/raw
+    aligned_faces: output/face_recognition/datasets/aligned_faces
+    embeddings: output/face_recognition/datasets/embeddings
+    indexes: output/face_recognition/datasets/indexes

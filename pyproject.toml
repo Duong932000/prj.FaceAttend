@@ -10,7 +10,7 @@ dependencies = [
     "torch==2.2.2",
     "torchvision==0.17.2",
     "insightface==0.7.3",
-    "onnxruntime-gpu==1.17.1",
+    "onnxruntime-gpu==1.19.2",
     "onnx==1.16.0",
     "onnxscript==0.1.0",
     "numpy==1.26.4",
