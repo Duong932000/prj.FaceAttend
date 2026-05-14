@@ -18,7 +18,8 @@ dependencies = [
     "matplotlib==3.8.3",
     "PyYAML==6.0.1",
     "tqdm==4.66.2",
-    "faiss-cpu==1.7.4"
+    "faiss-cpu==1.7.4",
+    "customtkinter==5.2.2"
 ]
 
 [build-system]
