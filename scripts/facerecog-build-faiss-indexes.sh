@@ -14,4 +14,4 @@ export FACE_ATTEND_ROOT="$ROOT_DIR"
 echo "FACE_ATTEND_ROOT=$FACE_ATTEND_ROOT"
 
 echo "[INFO] Running build_faiss_index ..."
-python -m core.face_recognition.training.pretrained.build_faiss_index # module mode
+python -m core.face_recognition.training.pretrained.build_faiss_indexes # module mode
