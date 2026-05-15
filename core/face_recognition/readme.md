@@ -13,7 +13,7 @@ The system supports:
 
 # 2. Architecture Overview
 
-`
+```text
 Webcam
    ↓
 InsightFace Detection
@@ -25,7 +25,7 @@ ArcFace Embedding Extraction
 FAISS Similarity Search
    ↓
 Identity Matching
-`
+```
 
 # 3. Pretrained Workflow
 
