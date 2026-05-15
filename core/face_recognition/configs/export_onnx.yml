@@ -1,0 +1,16 @@
+export_onnx:
+  device: cuda
+
+  input_size:
+    - 1
+    - 3
+    - 112
+    - 112
+  
+  opset_version: 17
+  dynamic_batch: true
+  simplify: true
+
+  paths:
+    model_pt: >
+      utput/face_recognition/models/arcface/model.pt

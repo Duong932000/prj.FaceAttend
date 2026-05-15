@@ -3,6 +3,7 @@ face_recognition:
     name: buffalo_l
     det_size: [320, 320]
     ctx_id: 0
+    download_url: https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip
 
   alignment:
     image_size: 112
