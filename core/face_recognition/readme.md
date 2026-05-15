@@ -1,7 +1,7 @@
 
-Face Recognition System
+# Face Recognition System
 
-# 1. Folder contains the complete face recognition pipeline build on top of InsightFace and FAISS
+## 1. Folder contains the complete face recognition pipeline build on top of InsightFace and FAISS
 
 The system supports:
 - Auto dataset collection from webcam
@@ -11,7 +11,7 @@ The system supports:
 - Realtime face recognition inference
 - Local pretrained model management
 
-# 2. Architecture Overview
+## 2. Architecture Overview
 
 ```text
 Webcam
@@ -27,7 +27,7 @@ FAISS Similarity Search
 Identity Matching
 ```
 
-# 3. Pretrained Workflow
+## 3. Pretrained Workflow
 
 This project currently uses pretrained InsightFace models, used is: "buffalo_l"
 Following some step below:
@@ -47,9 +47,7 @@ Following some step below:
 - step 5: Build FAISS index
     `core.face_recognition.preprocess.build_faiss_indexes.py`
 
-# 3. Folder Struture
-
-## 3. Folder Structure
+## 4. Folder Struture
 
 ```text
 face_recognition/
