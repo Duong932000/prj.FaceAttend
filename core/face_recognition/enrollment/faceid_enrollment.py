@@ -23,17 +23,14 @@
 
 import cv2
 import time
-
 from pathlib import Path
-
 from insightface.app import FaceAnalysis
+
 from core.face_recognition.utils.config import load_config
-from core.face_recognition.preprocess.blur_detector import BlurDetector
-from core.face_recognition.preprocess.brightness_checker import BrightnessChecker
-from core.face_recognition.preprocess.pose_validator import PoseValidator
-
 from core.face_recognition.ui.main_window import MainWindow
-
+from core.face_recognition.preprocess.blur_detector import BlurDetector
+from core.face_recognition.preprocess.pose_validator import PoseValidator
+from core.face_recognition.preprocess.brightness_checker import BrightnessChecker
 
 class AutoCaptureDataset:
     def __init__(self):
@@ -47,7 +44,7 @@ class AutoCaptureDataset:
         self.raw_dataset_dir = Path(root_dir / self.cfg["paths"]["raw_dataset"])
         self.raw_dataset_dir.mkdir(parents=True, exist_ok=True,)
 
-
+        # parameters
         self.camera_id = self.capture_cfg["camera_id"]
         self.image_width = self.capture_cfg["image_width"]
         self.image_height = self.capture_cfg["image_height"]
@@ -60,14 +57,12 @@ class AutoCaptureDataset:
         self.stable_frames_required = self.capture_cfg["stable_frames_required"]
         self.poses = self.capture_cfg["poses"]
 
-
         self.person_name = None
         self.capture_started = False
         self.current_pose_index = 0
         self.current_pose_count = 0
         self.last_capture_time = 0
         self.stable_frame_count = 0
-
 
         print("[INFO] Loading InsightFace...")
         self.app = FaceAnalysis(name=self.cfg["model"]["name"])
@@ -444,8 +439,4 @@ class AutoCaptureDataset:
 
 if __name__ == "__main__":
 
-    auto_capture_dataset = (
-        AutoCaptureDataset()
-    )
-
-    auto_capture_dataset.run()
+    AutoCaptureDataset().run()

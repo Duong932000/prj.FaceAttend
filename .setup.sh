@@ -28,13 +28,28 @@ if ! command -v uv &> /dev/null; then
     fi
 fi
 
-# Install Python 3.10 if missing
+# Install Python 3.10 + tkinter if missing
 if ! command -v python3.10 &> /dev/null; then
     echo "[INFO] Installing Python 3.10 ..."
     if [ "$PKG_MANAGER" = "dnf" ]; then
-        sudo dnf install -y python3.10 python3.10-devel
+        sudo dnf install -y \
+            python3.10 \
+            python3.10-devel \
+            python3-tkinter \
+            tk \
+            tk-devel \
+            tcl \
+            tcl-devel
+
     else
-        sudo apt update && sudo apt install -y python3.10 python3.10-venv python3.10-dev
+        sudo apt update
+        sudo apt install -y \
+            python3.10 \
+            python3.10-venv \
+            python3.10-dev \
+            python3-tk \
+            tk-dev \
+            tcl-dev
     fi
 fi
 
@@ -57,8 +72,11 @@ echo "[INFO] System deps installed"
 # Create and activate venv
 echo "[INFO] Creating .venv ..."
 rm -rf .venv
-uv venv --python 3.10
+uv venv --python /usr/bin/python3.10
 source .venv/bin/activate
+# verify tkinter package installed or not
+python -c "import tkinter"
+echo "[INFO] tkinter verified"
 
 echo "[INFO] Syncing project + deps..."
 uv sync
