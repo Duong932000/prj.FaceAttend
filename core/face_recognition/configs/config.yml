@@ -27,6 +27,17 @@ face_recognition:
       - mask
       - glasses
 
+  realtime_inference:
+    camera_id: 0
+    window_name: "Realtime Face Recognition"
+    frame_width: 1280
+    frame_height: 720
+    det_size: [320, 320]
+    similarity_threshold: 0.45
+    unknown_label: "UNKNOWN"
+    show_fps: true
+    draw_landmarks: false
+
   paths:
     config_path: core/face_recognition/configs/config.yml
     output_root: output/face_recognition
