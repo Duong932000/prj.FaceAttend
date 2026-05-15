@@ -33,7 +33,7 @@ def load_config():
 
     root_dir = get_root_dir()
 
-    config_path = Path(root_dir / "core" / "face_recognition" / "configs" /"config.yml")
+    config_path = Path(root_dir / "core" / "face_recognition" / "configs" /"common.yml")
 
     if not config_path.exists():
         raise FileNotFoundError(f"config.yml not found at: {config_path}")
