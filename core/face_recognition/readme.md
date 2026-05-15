@@ -49,70 +49,86 @@ Following some step below:
 
 # 3. Folder Struture
 
-`
-face_recognition
-|
-├── ./configs
-│   ├── ./configs/common.yml
-│   ├── ./configs/export_onnx.yml
-│   └── ./configs/export_tensorRT.yml
-├── ./download
-│   ├── ./download/download_model.py
-│   └── ./download/__int__.py
-├── ./enrollment
-│   ├── ./enrollment/faceid_enrollment.py
-│   └── ./enrollment/__init__.py
-├── ./export
-│   ├── ./export/export_onnx.py
-│   └── ./export/export_tensorRT.py
-├── ./inference
-│   └── ./inference/__init__.py
-├── ./__init__.py
-├── ./models
-│   ├── ./models/backbones
-│   │   ├── ./models/backbones/iresnet.py
-│   │   ├── ./models/backbones/mobilefacenet.py
-│   │   └── ./models/backbones/partial_fc.py
-│   ├── ./models/heads
-│   │   ├── ./models/heads/adaface_head.py
-│   │   ├── ./models/heads/arcface_head.py
-│   │   └── ./models/heads/cosface_head.py
-│   ├── ./models/inference
-│   │   ├── ./models/inference/embedding_model.py
-│   │   ├── ./models/inference/face_aligner.py
-│   │   └── ./models/inference/face_detector.py
-│   ├── ./models/__init__.py
-│   └── ./models/losses
-│       ├── ./models/losses/arcface_loss.py
-│       └── ./models/losses/triplet_loss.py
-├── ./preprocess
-│   ├── ./preprocess/align_face.py
-│   ├── ./preprocess/blur_detector.py
-│   ├── ./preprocess/brightness_checker.py
-│   ├── ./preprocess/build_dataset.py
-│   ├── ./preprocess/crop_face.py
-│   ├── ./preprocess/detect_face.py
-│   ├── ./preprocess/generate_pairs.py
-│   ├── ./preprocess/__init__.py
-│   └── ./preprocess/pose_validator.py
-├── ./serving
-│   ├── ./serving/__init__.py
-│   └── ./serving/realtime_inference.py
-├── ./training
-│   ├── ./training/full_train
-│   └── ./training/pretrained
-│       ├── ./training/pretrained/build_faiss_indexes.py
-│       ├── ./training/pretrained/generate_embeddings.py
-│       └── ./training/pretrained/_init__.py
-├── ./ui
-│   ├── ./ui/control_panel.py
-│   ├── ./ui/__init__.py
-│   ├── ./ui/main_window.py
-│   ├── ./ui/progress_panel.py
-│   └── ./ui/webcam_panel.py
-└── ./utils
-    ├── ./utils/config.py
-    └── ./utils/__init__.py
+## 3. Folder Structure
 
-18 directories, 44 files
-`
+```text
+face_recognition/
+├── configs/
+│   ├── common.yml
+│   ├── export_onnx.yml
+│   └── export_tensorRT.yml
+│
+├── download/
+│   ├── download_model.py
+│   └── __init__.py
+│
+├── enrollment/
+│   ├── faceid_enrollment.py
+│   └── __init__.py
+│
+├── export/
+│   ├── export_onnx.py
+│   └── export_tensorRT.py
+│
+├── inference/
+│   └── __init__.py
+│
+├── models/
+│   ├── backbones/
+│   │   ├── iresnet.py
+│   │   ├── mobilefacenet.py
+│   │   └── partial_fc.py
+│   │
+│   ├── heads/
+│   │   ├── adaface_head.py
+│   │   ├── arcface_head.py
+│   │   └── cosface_head.py
+│   │
+│   ├── inference/
+│   │   ├── embedding_model.py
+│   │   ├── face_aligner.py
+│   │   └── face_detector.py
+│   │
+│   ├── losses/
+│   │   ├── arcface_loss.py
+│   │   └── triplet_loss.py
+│   │
+│   └── __init__.py
+│
+├── preprocess/
+│   ├── align_face.py
+│   ├── blur_detector.py
+│   ├── brightness_checker.py
+│   ├── build_dataset.py
+│   ├── crop_face.py
+│   ├── detect_face.py
+│   ├── generate_pairs.py
+│   ├── pose_validator.py
+│   └── __init__.py
+│
+├── serving/
+│   ├── realtime_inference.py
+│   └── __init__.py
+│
+├── training/
+│   ├── full_train/
+│   │
+│   └── pretrained/
+│       ├── build_faiss_indexes.py
+│       ├── generate_embeddings.py
+│       └── __init__.py
+│
+├── ui/
+│   ├── control_panel.py
+│   ├── main_window.py
+│   ├── progress_panel.py
+│   ├── webcam_panel.py
+│   └── __init__.py
+│
+├── utils/
+│   ├── config.py
+│   └── __init__.py
+│
+└── __init__.py
+```
+
