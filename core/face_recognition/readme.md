@@ -11,10 +11,9 @@ The system supports:
 - Realtime face recognition inference
 - Local pretrained model management
 
-## Demo
-![DEMO](assets/gifs/face_recognition.gif)
-
----
+<p align="center">
+  <img src="assets/gifs/face_recognition.gif" width="800">
+</p>
 
 ## 2. Architecture Overview
 
