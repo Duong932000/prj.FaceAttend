@@ -9,13 +9,23 @@ class FaceEnrollmentApp:
     def __init__(self):
         _, self.cfg = load_enrollment_config()
 
-        self.window = MainWindow()
+        self.person_name = None
+        self.enrollment_started = False
+        
+        # show window
+        self.window = MainWindow(start_detection_callback=self.start_detection,
+                                 stop_detection_callback=self.stop_detection,
+                                 start_enrollment_callback=self.start_enrollment)
+
+        # stream camera
         self.camera_stream = CameraStream(self.cfg["enrollment"]["camera"])
-        self.processor = FaceProcessor(self.camera_stream)
         self.camera_stream.start()
+
+        self.processor = FaceProcessor(self.camera_stream)
         self.processor.start()
 
     def draw_overlay(self, frame, result):
+
         if not result["face_detected"]:
             cv2.putText(frame, "NO FACE DETECTED", (40, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
             return frame
@@ -46,10 +56,37 @@ class FaceEnrollmentApp:
         self.window.right_panel.status_label.configure(text=status)
         self.window.right_panel.pose_label.configure(text=(f"POSE: {self.processor.target_pose.upper()}"))
 
+    def start_detection(self):
+
+        self.processor.enable_detection()
+
+        self.window.right_panel.status_label.configure(text="DETECTION ON")
+
+    def stop_detection(self):
+
+        self.processor.disable_detection()
+
+        self.window.right_panel.status_label.configure(text="DETECTION OFF")
+
+    def start_enrollment(self, person_name):
+
+        self.person_name = person_name
+
+        self.enrollment_started = True
+
+        print(f"[INFO] Enrollment started: {person_name}")
+
     def render_loop(self):
 
         result = self.processor.latest_result
-        if result is not None:
+
+        frame = self.camera_stream.get_latest_frame()
+
+        if frame is None:
+            self.window.after(30, self.render_loop)
+            return
+        
+        if (self.processor.detection_enabled and result is not None):
             frame = result["frame"]
             frame = self.draw_overlay(frame, result)
             self.update_ui(result)
