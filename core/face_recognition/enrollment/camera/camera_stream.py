@@ -3,11 +3,11 @@ import cv2
 import threading
 
 class CameraStream:
-    def __init__(self, camera_id=0, width=1280, height=720):
-        self.cap = cv2.VideoCapture(camera_id)
+    def __init__(self, camera_cfg):
+        self.cap = cv2.VideoCapture(camera_cfg["camera_id"])
 
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIHGT, height)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, camera_cfg["width"])
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_cfg["height"])
 
         self.running = False
         self.frame = None
@@ -18,7 +18,7 @@ class CameraStream:
         threading.Thread(target=self.update, daemon=True).start()
 
     def update(self):
-        
+
         while self.running:
             ret, frame = self.cap.read()
             if not ret:
@@ -29,13 +29,13 @@ class CameraStream:
                 self.frame = frame
 
     def get_latest_frame(self):
-        
-        with self.lock():
+
+        with self.lock:
             if self.frame is None:
                 return None
             
             return self.frame.copy()
-        
+
     def stop(self):
 
         self.running = False

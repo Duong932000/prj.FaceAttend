@@ -13,5 +13,5 @@ export FACE_ATTEND_ROOT="$ROOT_DIR"
 
 echo "FACE_ATTEND_ROOT=$FACE_ATTEND_ROOT"
 
-echo "[INFO] Running faceid_enrollment from webcam..."
-python -m core.face_recognition.enrollment.faceid_enrollment # module mode
+echo "[INFO] Running auto-enrollment from webcam..."
+python -m core.face_recognition.enrollment.enrollment # module mode
