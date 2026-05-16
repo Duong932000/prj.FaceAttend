@@ -26,8 +26,8 @@ import time
 from pathlib import Path
 from insightface.app import FaceAnalysis
 
-from core.face_recognition.utils.config import load_config
-from core.face_recognition.ui.main_window import MainWindow
+from core.face_recognition.utils.config import load_common_config
+from core.face_recognition.enrollment.ui.main_window import MainWindow
 from core.face_recognition.preprocess.blur_detector import BlurDetector
 from core.face_recognition.preprocess.pose_validator import PoseValidator
 from core.face_recognition.preprocess.brightness_checker import BrightnessChecker
@@ -36,7 +36,7 @@ class AutoCaptureDataset:
     def __init__(self):
 
         # load config
-        root_dir, config = load_config()
+        root_dir, config = load_common_config()
         self.cfg = config["face_recognition"]
         self.capture_cfg = self.cfg["dataset_capture"]
 

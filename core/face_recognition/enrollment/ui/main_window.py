@@ -1,9 +1,9 @@
 
 import customtkinter as ctk
 
-from core.face_recognition.ui.webcam_panel import WebcamPanel
-from core.face_recognition.ui.progress_panel import ProgressPanel
-from core.face_recognition.ui.control_panel import ControlPanel
+from core.face_recognition.enrollment.ui.webcam_panel import WebcamPanel
+from core.face_recognition.enrollment.ui.progress_panel import ProgressPanel
+from core.face_recognition.enrollment.ui.control_panel import ControlPanel
 
 
 class MainWindow(ctk.CTk):

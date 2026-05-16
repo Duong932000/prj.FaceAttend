@@ -1,0 +1,105 @@
+enrollment:
+  camrera:
+    camera_id: 0
+    width: 1280
+    height: 720
+    fps: 30
+  
+  ui:
+    window_width: 1600
+    window_height: 900
+    appearance_mode: dark
+    theme_color: green
+    render_fps: 30
+
+  capture:
+    capture_per_pose: 20
+    capture_interval_sec: 1.0
+    stable_frames_required: 5
+    enable_auto_capture: true
+    save_aligned_face: true
+    save_full_frame: false
+
+  quality:
+    blur_threshold: 100
+    brightness_min: 70
+    brightness_max: 180
+
+    center_threshold_x: 40
+    center_threshold_y: 40
+
+    motion_threshold: 8
+
+  stability:
+    history_size: 10
+    center_std_max: 12
+    yaw_std_max: 3
+    pitch_std_max: 3
+  
+  workflow:
+    required_poses:
+      - front
+      - left
+      - right
+      - up
+      - down
+    
+    optional_poses:
+      - mask
+      - glasses
+    
+  poses:
+    front:
+      yaw_min: -10
+      yaw_max: 10
+      pitch_min: -10
+      pitch_max: 10
+
+    left:
+      yaw_min: -45
+      yaw_max: -18
+      pitch_min: -12
+      pitch_max: 12
+
+    right:
+      yaw_min: 18
+      yaw_max: 45
+      pitch_min: -12
+      pitch_max: 12
+
+    up:
+      yaw_min: -12
+      yaw_max: 12
+      pitch_min: 15
+      pitch_max: 35
+
+    down:
+      yaw_min: -12
+      yaw_max: 12
+      pitch_min: -35
+      pitch_max: -15
+
+    mask:
+      yaw_min: -12
+      yaw_max: 12
+      pitch_min: -12
+      pitch_max: 12
+
+    glasses:
+      yaw_min: -12
+      yaw_max: 12
+      pitch_min: -12
+      pitch_max: 12
+
+  upload:
+    supported_formats:
+      - jpg
+      - jpeg
+      - png
+    
+    max_file_size_mb: 10
+
+  performance:
+    inference_sleep_sec: 0.03
+    enable_frame_skip: true
+    max_processing_fps: 20

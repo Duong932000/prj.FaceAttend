@@ -26,7 +26,7 @@ from pathlib import Path
 import onnxruntime as ort
 from insightface.app import FaceAnalysis
 from insightface.utils import face_align
-from core.face_recognition.utils.config import load_config
+from core.face_recognition.utils.config import load_common_config
 
 
 class FaceAlignment:
@@ -35,7 +35,7 @@ class FaceAlignment:
         # check onnxruntime available or not
         print(f"[INFO] Check onnxruntime: {ort.get_available_providers()}")
 
-        root_dir, config = load_config()
+        root_dir, config = load_common_config()
         self.cfg = config["face_recognition"]
 
         # path

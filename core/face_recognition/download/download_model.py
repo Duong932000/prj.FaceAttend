@@ -26,13 +26,13 @@ import zipfile
 import requests
 from tqdm import tqdm
 from pathlib import Path
-from core.face_recognition.utils.config import load_config
+from core.face_recognition.utils.config import load_common_config
 
 class ModelDownloader:
 
     def __init__(self):
 
-        root_dir, config = load_config()
+        root_dir, config = load_common_config()
         self.cfg = config["face_recognition"]
         
         # model parameters

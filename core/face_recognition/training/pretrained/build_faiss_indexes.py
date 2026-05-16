@@ -24,14 +24,14 @@
 import faiss
 import numpy as np
 from pathlib import Path
-from core.face_recognition.utils.config import load_config
+from core.face_recognition.utils.config import load_common_config
 
 class FaissIndexesBuilder:
 
     def __init__(self):
 
         # load config
-        root_dir, config = load_config()
+        root_dir, config = load_common_config()
         self.cfg = config["face_recognition"]
 
         # paths

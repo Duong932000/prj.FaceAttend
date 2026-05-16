@@ -25,21 +25,30 @@ import os
 import yaml
 from pathlib import Path
 
-def get_root_dir():
+def _get_root_dir():
 
     return Path(os.getenv("FACE_ATTEND_ROOT", ".")).resolve()
 
-def load_config():
-
-    root_dir = get_root_dir()
-
-    config_path = Path(root_dir / "core" / "face_recognition" / "configs" /"common.yml")
+def _load_yml_file(config_path):
 
     if not config_path.exists():
         raise FileNotFoundError(f"config.yml not found at: {config_path}")
 
     with open(config_path, "r") as f:
-        config = yaml.safe_load(f)
+        return yaml.safe_load(f)
+
+def load_common_config():
+
+    root_dir = _get_root_dir()
+
+    config = _load_yml_file(Path(root_dir / "core" / "face_recognition" / "configs" /"common.yml"))
 
     return root_dir, config
 
+def load_enrollment_config():
+
+    root_dir = _get_root_dir()
+
+    config = _load_yml_file(Path(root_dir / "core" / "face_recognition" / "configs" /"enrollment.yml"))
+
+    return root_dir, config
