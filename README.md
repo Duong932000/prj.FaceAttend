@@ -17,7 +17,8 @@ Face attendance is a real-time attendance system using computer vision and deep 
 - Progressive evolution from desktop - web platform
 
 # System Architecture
-`
+
+```text
     Camera Stream (webcam, camera)
         ↓
     Face Detection (InsightFace)
@@ -33,7 +34,7 @@ Face attendance is a real-time attendance system using computer vision and deep 
     Decision Engine
         ↓
     Logger
-`
+```
 
 # Core Components
 
