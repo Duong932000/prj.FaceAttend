@@ -4,7 +4,7 @@
 #       .;cccccccccccccccccccccc;           --------------
 #     .:cccccccccccccccccccccccccc:.        Project name :      prj.FaceAttend
 #   .;ccccccccccccc;.:dddl:.;ccccccc;.      Author       :      Nguyen Dac Duong
-#  .:ccccccccccccc;OWMKOOXMWd;ccccccc:.     File name    :      addons.py
+#  .:ccccccccccccc;OWMKOOXMWd;ccccccc:.     File name    :      error_handling.py
 # .:ccccccccccccc;KMMc;cc;xMMc;ccccccc:.    Description  :      
 # ,cccccccccccccc;MMM.;cc;;WW:;cccccccc,    --------------
 # :cccccccccccccc;MMM.;cccccccccccccccc:
@@ -21,18 +21,4 @@
 #########################################################
 
 
-import sys
-from CTkMessagebox import CTkMessagebox
-
-def exit_ui(window):
-
-    msg_ExitSystem \
-        = CTkMessagebox(master=window,
-                        title="Exit",
-                        message="Do you want to exit the FaceID Enrollment System",
-                        icon="question",
-                        option_1="Cancel",
-                        option_2="Exit")
-    if msg_ExitSystem.get() == "Exit":
-        window.destroy()
-        sys.exit()
+import os
