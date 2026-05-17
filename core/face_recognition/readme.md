@@ -134,3 +134,35 @@ face_recognition/
 └── __init__.py
 ```
 
+## 5. Enrollment Layout
+
+```text
+┌────────────────────┬──────────────────────────────────────┬─────────────────────────────┐
+│                    │                                      │                             │
+│   MENU PANEL       │         CAMERA FRAME PANEL           │      PROCESSING PANEL       │
+│                    │                                      │                             │
+│  [Enrollment]      │                                      │   ┌─────────────────────┐   │
+│  [Advance]         │                                      │   │ Webcam | Upload     │   │
+│                    │                                      │   └─────────────────────┘   │
+│                    │                                      │                             │
+│                    │                                      │                             │
+│                    │        LIVE CAMERA STREAM            │                             │
+│                    │                                      │                             │
+│                    │     + Face Guide Overlay             │                             │
+│                    │     + Pose Instruction               │                             │
+│                    │     + Auto Capture Indicator         │                             │
+│                    │                                      │                             │
+│                    │                                      │                             │
+│                    │                                      │                             │
+│                    │                                      │                             │
+│                    │                                      │                             │
+│                    │                                      │                             │
+│                    │                                      │                             │
+│                    │                                      │                             │
+├────────────────────┤                                      │                             │
+│ Status             │                                      │                             │
+│ - Camera Ready     │                                      │                             │
+│ - Model Loaded     │                                      │                             │
+│ - Device: Webcam0  │                                      │                             │
+└────────────────────┴──────────────────────────────────────┴─────────────────────────────┘
+```
