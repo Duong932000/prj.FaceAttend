@@ -36,8 +36,8 @@ class CollectionOptions(customtkinter.CTkScrollableFrame):
 
     DEFAULT_OPTIONS = ["Front", "Left", "Right", "Up", "Down", "Mask", "Glasses"]
 
-    def __init__(self, master, options=DEFAULT_OPTIONS, command=None, **kwargs):
-        super().__init__(master, orientation="vertical", **kwargs)
+    def __init__(self, master, height=300, options=DEFAULT_OPTIONS, command=None, **kwargs):
+        super().__init__(master, height=300, orientation="vertical", **kwargs)
 
         self.options = options
         self.command = command
@@ -201,7 +201,8 @@ class MainWindow(customtkinter.CTk):
         # root grid
         self.grid_columnconfigure(0, weight=0)   # menu panel
         self.grid_columnconfigure(1, weight=3)   # camera panel
-        self.grid_columnconfigure(2, weight=1)   # processing panel
+        self.grid_columnconfigure(2, weight=1)   # processing log panel
+        self.grid_columnconfigure(3, weight=1)   # controll_ panel
         self.grid_rowconfigure(0, weight=1)
 
         # menu panel
@@ -214,12 +215,18 @@ class MainWindow(customtkinter.CTk):
         self.camera_panel.grid(row=0, column=1, padx=5, pady=10, sticky="nsew")
         self.camera_panel.grid_rowconfigure(0, weight=1)
         self.camera_panel.grid_columnconfigure(0, weight=1)
-        
-        # processing panel
-        self.processing_panel = customtkinter.CTkFrame(self, width=350, corner_radius=20)
+
+        # processing log panel
+        self.processing_panel = customtkinter.CTkFrame(self, corner_radius=20)
         self.processing_panel.grid(row=0, column=2, padx=(5, 10), pady=10, sticky="nsew")
         self.processing_panel.grid_rowconfigure(0, weight=1)
         self.processing_panel.grid_columnconfigure(0, weight=1)
+
+        # processing panel
+        self.controll_panel = customtkinter.CTkFrame(self, width=350, corner_radius=20)
+        self.controll_panel.grid(row=0, column=3, padx=(5, 10), pady=10, sticky="nsew")
+        self.controll_panel.grid_rowconfigure(0, weight=1)
+        self.controll_panel.grid_columnconfigure(0, weight=1)
 
         self.protocol("WM_DELETE_WINDOW",self.closeApplication)
 
@@ -257,8 +264,11 @@ class MainWindow(customtkinter.CTk):
         # component 2: Camera Panel
         self.cameraPanelConfigure()
 
-        # component 3: Processing Panel
-        self.processingPanelConfigure()
+        # component 3: Processing log Panel
+        self.processingLogPanelConfigure()
+
+        # component 4: Control Panel
+        self.ControlPanelConfigure()
 
         # Frame Selection
         self.frameSelection("Enrollment")
@@ -346,20 +356,33 @@ class MainWindow(customtkinter.CTk):
         self.camera_label = customtkinter.CTkLabel(self.camera_display_frame, text="")
         self.camera_label.grid(row=0, column=0, sticky="nsew")
 
-    def processingPanelConfigure(self):
+    def processingLogPanelConfigure(self):
+        
+        # process label
+        self.progress_label \
+            = customtkinter.CTkLabel(self.processing_panel,
+                                     text="✓ Enrollment Progress",
+                                     font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.progress_label.pack(anchor="w", padx=5, pady=(10, 5))
+
+        # Enrollment progress textbox
+        self.processing_log_textbox = EnrollmentProgressTextbox(self.processing_panel)
+        self.processing_log_textbox.pack(fill="both", expand=True, padx=10, pady=(10, 10))
+
+    def ControlPanelConfigure(self):
 
         # tabview configure
-        self.processing_tabview = customtkinter.CTkTabview(self.processing_panel)
-        self.processing_tabview.grid(row=0, column=0, padx=15, pady=15, sticky="nsew")
-        self.processing_tabview.add("Webcam")
-        self.processing_tabview.add("Upload")
+        self.control_tabview = customtkinter.CTkTabview(self.controll_panel)
+        self.control_tabview.grid(row=0, column=0, padx=15, pady=15, sticky="nsew")
+        self.control_tabview.add("Webcam")
+        self.control_tabview.add("Upload")
 
         # Show Webcam tab
-        self.webcam_tab = self.processing_tabview.tab("Webcam")
+        self.webcam_tab = self.control_tabview.tab("Webcam")
         self.webcamTabConfigure()
 
         # show Upload tab
-        self.upload_tab = self.processing_tabview.tab("Upload")
+        self.upload_tab = self.control_tabview.tab("Upload")
         self.uploadTabConfigure()
 
     def webcamTabConfigure(self):
@@ -393,15 +416,7 @@ class MainWindow(customtkinter.CTk):
         # Show collection options
         self.collection_options \
             = CollectionOptions(self.webcam_tab, width=250, height=140)
-        self.collection_options.pack(fill="both", expand=True, padx=10, pady=5)
-
-        self.progress_label \
-            = customtkinter.CTkLabel(self.webcam_tab,
-                                     text="✓ Enrollment Progress",
-                                     font=customtkinter.CTkFont(size=18, weight="bold"))
-        self.progress_label.pack(anchor="w", padx=5, pady=(10, 5))
-        self.enrollment_progress_textbox = EnrollmentProgressTextbox(self.webcam_tab)
-        self.enrollment_progress_textbox.pack(fill="x", padx=10, pady=(10, 10))
+        self.collection_options.pack(fill="x", expand=False, padx=10, pady=5)
 
         # Start Enrollment button
         self.start_button \
@@ -409,7 +424,8 @@ class MainWindow(customtkinter.CTk):
                                       text="Start Enrollment",
                                       command=self.runningEnrollment,
                                       width=40,
-                                      height=20)
+                                      height=20,
+                                      font=customtkinter.CTkFont(size=32))
         self.start_button.pack(fill="x", padx=10, pady=(25, 10))
 
     def uploadTabConfigure(self):

@@ -40,7 +40,7 @@ Following some step below:
     `core.face_recognition.download.download_model.py`
 
 - step 2: Automatic collect dataset
-    `core.face_recognition.enrollment.faceid_enrollment.py`
+    `core.face_recognition.enrollment.enrollment.py`
 
 - step 3: Face Alignment
     `core.face_recognition.preprocess.align_face.py`
