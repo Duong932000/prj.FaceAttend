@@ -32,7 +32,7 @@ from core.face_recognition.enrollment.camera.camera_stream import CameraStream
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("green")
 
-class CollectionOptions(customtkinter.CTkScrollableFrame):
+class FaceCollectionOptions(customtkinter.CTkScrollableFrame):
 
     DEFAULT_OPTIONS = ["Front", "Left", "Right", "Up", "Down", "Mask", "Glasses"]
 
@@ -114,6 +114,39 @@ class CollectionOptions(customtkinter.CTkScrollableFrame):
             for i, var in enumerate(self.checkbox_vars)
             if var.get()
         ]
+
+class EnrollmentPipeline(customtkinter.CTkFrame):
+
+    DEFAULT_PIPELINE_OPTIONS = [
+        "Align Face",
+        "Generate Embedding",
+        "Build FAISS Index",
+        "Generate dataset_report.json"
+    ]
+
+    def __init__(self,master, options=DEFAULT_PIPELINE_OPTIONS, **kwargs):
+        super().__init__(master, fg_color="transparent", **kwargs)
+
+        self.options = options
+        self.checkbox_vars = {}
+        self.checkbox_widgets = {}
+        self.pipeline_RenderOptions_Handle()
+
+    def pipeline_RenderOptions_Handle(self):
+
+        for index, option in enumerate(self.options):
+            option_var = customtkinter.BooleanVar(value=True)
+            option_checkbox = customtkinter.CTkCheckBox(self, text=option, variable=option_var)
+            option_checkbox.pack(anchor="w", padx=10, pady=5)
+            self.checkbox_vars[option] = option_var
+            self.checkbox_widgets[option] = option_checkbox
+
+    def pipeline_GetSelectedOptions_Handle(self):
+
+        return {
+            option: var.get()
+            for option, var in self.checkbox_vars.items()
+        }
 
 class EnrollmentProgressTextbox(customtkinter.CTkFrame):
 
@@ -223,7 +256,7 @@ class MainWindow(customtkinter.CTk):
         self.processing_panel.grid_columnconfigure(0, weight=1)
 
         # processing panel
-        self.controll_panel = customtkinter.CTkFrame(self, width=350, corner_radius=20)
+        self.controll_panel = customtkinter.CTkFrame(self, width=400, corner_radius=20)
         self.controll_panel.grid(row=0, column=3, padx=(5, 10), pady=10, sticky="nsew")
         self.controll_panel.grid_rowconfigure(0, weight=1)
         self.controll_panel.grid_columnconfigure(0, weight=1)
@@ -387,10 +420,11 @@ class MainWindow(customtkinter.CTk):
 
     def webcamTabConfigure(self):
         
+        # ----- USER INFORMATION ----- #
         # User information label
         self.userinfo_label \
             = customtkinter.CTkLabel(self.webcam_tab,
-                                     text="✓ User Information",
+                                     text="✓ User Information:",
                                      font=customtkinter.CTkFont(size=18, weight="bold"))
         self.userinfo_label.pack(anchor="w", padx=10, pady=(15, 10))
 
@@ -400,12 +434,23 @@ class MainWindow(customtkinter.CTk):
                                     placeholder_text="Enter name")
         self.name_entry.pack(fill="x", padx=10, pady=5)
 
-        # ID entry (optional)
-        self.id_entry \
-            = customtkinter.CTkEntry(self.webcam_tab,
-                                     placeholder_text="Enter ID (*Optional)")
-        self.id_entry.pack(fill="x", padx=10, pady=5)
 
+        # ----- OUTPUT DIRECTORY ----- #
+        # Dataset output path label
+        self.dataset_output_label \
+            = customtkinter.CTkLabel(self.webcam_tab,
+                                     text="✓ Output Directory:",
+                                     font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.dataset_output_label.pack(anchor="w", padx=10, pady=(15, 10))
+
+        # Dataset output path entry
+        self.dataset_output_entry \
+            = customtkinter.CTkEntry(self.webcam_tab,
+                                     placeholder_text="*default: ./output/face_recognition/datasets")
+        self.dataset_output_entry.pack(fill="x", padx=10, pady=5)
+
+
+        # ----- FACE COLLECTION OPTIONS ----- #
         # Face Collection Options
         self.option_label \
             = customtkinter.CTkLabel(self.webcam_tab,
@@ -415,9 +460,24 @@ class MainWindow(customtkinter.CTk):
 
         # Show collection options
         self.collection_options \
-            = CollectionOptions(self.webcam_tab, width=250, height=140)
+            = FaceCollectionOptions(self.webcam_tab, width=250, height=140)
         self.collection_options.pack(fill="x", expand=False, padx=10, pady=5)
+ 
 
+        # ----- ENROLLMENT PIPELINE OPTIONS ----- #
+        # enrollment pipeline label
+        self.pipeline_label \
+            = customtkinter.CTkLabel(self.webcam_tab,
+                                     text="✓ Enrollment Pipeline",
+                                     font=customtkinter.CTkFont(size=18,weight="bold"))
+        self.pipeline_label.pack(anchor="w", padx=10, pady=(15, 5))
+
+        # pipeline options
+        self.pipeline_options = EnrollmentPipeline(self.webcam_tab)
+        self.pipeline_options.pack(fill="x", padx=10, pady=(0, 10))
+
+
+        # ----- START ENROLLMENT ----- #
         # Start Enrollment button
         self.start_button \
             = customtkinter.CTkButton(self.webcam_tab,
