@@ -28,19 +28,5 @@ from core.face_recognition.enrollment.ui.window import MainWindow
 
 
 if __name__ == "__main__":
-    # f_DashboardInitialized = False
 
-    # try:
-        MainWindow().mainloop()
-    # except Exception as e:
-    #     if not f_DashboardInitialized:
-    #         root_error = customtkinter.CTk()
-    #         root_error.withdraw()
-    #         msg_error = CTkMessagebox(master=root_error,
-    #                                   title="FaceID Enrollment",
-    #                                   message=f"Error: {e}",
-    #                                   icon="warning",
-    #                                   option_1="Ok")
-    #         if msg_error.get() == "Ok":
-    #             root_error.destroy()
-    #             sys.exit()
+    MainWindow().mainloop()
