@@ -27,6 +27,7 @@ from PIL import Image
 from core.face_recognition.enrollment.ui.addons import exit_ui
 from core.face_recognition.enrollment.ui.configure import asset_resources
 from core.face_recognition.enrollment.camera.camera_stream import CameraStream
+from core.face_recognition.enrollment.processor.face_processor import FaceProcessor
 
 # Custom appearance of GUI
 customtkinter.set_appearance_mode("dark")
@@ -214,7 +215,7 @@ class MainWindow(customtkinter.CTk):
         # setup widgets for UI 
         self.GUI_WidgetsPanelSetup_Displayer()
 
-        self.GUI_ControlPanelProcess_Displayer()
+        self.GUI_FaceProcessor_Displayer()
 
     def GUI_InitialSetupResources_Displayer(self):
         
@@ -476,6 +477,25 @@ class MainWindow(customtkinter.CTk):
         self.pipeline_options = EnrollmentPipeline(self.webcam_tab)
         self.pipeline_options.pack(fill="x", padx=10, pady=(0, 10))
 
+        # ----- FACE DETECTION ----- #
+        self.start_detection_button \
+            = customtkinter.CTkButton(self.webcam_tab,
+                                      text="Start Face Detection",
+                                      command=self.startFaceDetection,
+                                      height=45,
+                                      font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.start_detection_button.pack(fill="x", padx=10, pady=(20, 10))
+
+        self.stop_detection_button \
+            = customtkinter.CTkButton(self.webcam_tab,
+                                      text="Stop Face Detection",
+                                      command=self.stopFaceDetection,
+                                      height=45,
+                                      fg_color="#8B0000",
+                                      hover_color="#5A0000",
+                                      font=customtkinter.CTkFont(size=18, weight="bold"))
+
+        self.stop_detection_button.pack(fill="x", padx=10, pady=(0, 20))
 
         # ----- START ENROLLMENT ----- #
         # Start Enrollment button
@@ -525,9 +545,11 @@ class MainWindow(customtkinter.CTk):
 
         self.frameSelection("Advance")
 
-    def GUI_ControlPanelProcess_Displayer(self):
+    def GUI_FaceProcessor_Displayer(self):
 
         self.cameraInitialize()
+
+        self.faceProcessorInitialize()
 
     def cameraInitialize(self):
 
@@ -543,9 +565,21 @@ class MainWindow(customtkinter.CTk):
 
         self.camera_UpdateFrame_Handle()
 
+    def faceProcessorInitialize(self):
+
+        self.face_processor = FaceProcessor(self.camera_stream)
+
+        self.face_processor.start()
+
     def camera_UpdateFrame_Handle(self):
 
         frame = self.camera_stream.get_latest_frame()
+
+        result = None
+
+        if hasattr(self, "face_processor"):
+
+            result = self.face_processor.get_latest_result()
 
         if frame is not None:
 
@@ -558,6 +592,68 @@ class MainWindow(customtkinter.CTk):
             # avoid startup size issue
             if panel_width > 10 and panel_height > 10:
 
+                # =====================================================
+                # DRAW FACE DETECTION
+                # =====================================================
+                if result is not None and result["face_detected"]:
+
+                    face = result["face"]
+
+                    x1, y1, x2, y2 = face.bbox.astype(int)
+
+                    score = float(face.det_score)
+
+                    # =================================================
+                    # BOX COLOR
+                    # =================================================
+                    box_color = (0, 255, 0)
+
+                    if not result["stable"]:
+                        box_color = (0, 165, 255)
+
+                    if not result["pose_valid"]:
+                        box_color = (0, 0, 255)
+
+                    # =================================================
+                    # DRAW BBOX
+                    # =================================================
+                    cv2.rectangle(
+                        frame,
+                        (x1, y1),
+                        (x2, y2),
+                        box_color,
+                        2
+                    )
+
+                    # =================================================
+                    # CONFIDENCE TEXT
+                    # =================================================
+                    confidence_text = f"{score:.2f}"
+
+                    yaw, pitch, _ = face.pose
+
+                    pose_text \
+                        = f"Yaw:{yaw:.1f} Pitch:{pitch:.1f}"
+
+                    cv2.putText(
+                        frame,
+                        pose_text,
+                        (x1, y2 + 20),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.6,
+                        box_color,
+                        2
+                    )
+
+                    cv2.putText(
+                        frame,
+                        confidence_text,
+                        (x1, y1 - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.7,
+                        box_color,
+                        2
+                    )
                 # ======================================
                 # CONVERT BGR -> RGB
                 # ======================================
@@ -598,6 +694,9 @@ class MainWindow(customtkinter.CTk):
 
     def closeApplication(self):
 
+        if hasattr(self, "face_processor"):
+            self.face_processor.stop()
+
         if hasattr(self, "camera_stream"):
             self.camera_stream.stop()
 
@@ -606,3 +705,88 @@ class MainWindow(customtkinter.CTk):
     def runningEnrollment(self):
 
         pass
+
+    def startFaceDetection(self):
+
+        self.face_processor.enable_detection()
+
+        self.processing_log_textbox.progress_AppendLog_Handle(
+            "[INFO] Face detection started"
+        )
+
+        self.faceDetection_UpdateUI_Handle()
+
+    def stopFaceDetection(self):
+
+        self.face_processor.disable_detection()
+
+        self.processing_log_textbox.progress_AppendLog_Handle(
+            "[INFO] Face detection stopped"
+        )
+
+    def faceDetection_UpdateUI_Handle(self):
+
+        result = self.face_processor.get_latest_result()
+
+        if result is not None:
+
+            # =================================================
+            # FACE DETECTED
+            # =================================================
+            if result["face_detected"]:
+
+                self.camera_status.configure(
+                    text="- Face Detected"
+                )
+
+                # =============================================
+                # STABLE
+                # =============================================
+                if result["stable"]:
+
+                    self.engine_status.configure(
+                        text="- Stable Face"
+                    )
+
+                else:
+
+                    self.engine_status.configure(
+                        text="- Unstable Face"
+                    )
+
+                # =============================================
+                # POSE VALID
+                # =============================================
+                if result["pose_valid"]:
+
+                    self.storage_status.configure(
+                        text="- Pose Valid"
+                    )
+
+                else:
+
+                    self.storage_status.configure(
+                        text="- Invalid Pose"
+                    )
+
+            else:
+
+                self.camera_status.configure(
+                    text="- No Face Detected"
+                )
+
+                self.engine_status.configure(
+                    text="- Waiting"
+                )
+
+                self.storage_status.configure(
+                    text="- Waiting"
+                )
+
+        # =====================================================
+        # LOOP
+        # =====================================================
+        self.after(
+            100,
+            self.faceDetection_UpdateUI_Handle
+        )
