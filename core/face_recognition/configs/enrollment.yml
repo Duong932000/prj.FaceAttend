@@ -6,13 +6,6 @@ enrollment:
     height: 720
     fps: 30
 
-  ui:
-    window_width: 1600
-    window_height: 900
-    appearance_mode: dark
-    theme_color: blue
-    render_fps: 30
-
   face_detection:
     model_name: buffalo_l
     ctx_id: 0

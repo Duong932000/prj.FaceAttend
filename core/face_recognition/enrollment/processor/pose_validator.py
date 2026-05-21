@@ -22,14 +22,10 @@
 
 
 class PoseValidator:
-
     def __init__(self, pose_config):
 
         self.pose_config = pose_config
 
-    # =========================================================
-    # VALIDATE POSE
-    # =========================================================
     def validate(self, face, target_pose):
 
         if target_pose not in self.pose_config:

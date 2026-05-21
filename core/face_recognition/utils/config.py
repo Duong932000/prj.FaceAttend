@@ -51,4 +51,16 @@ def load_enrollment_config():
 
     config = _load_yml_file(Path(root_dir / "core" / "face_recognition" / "configs" /"enrollment.yml"))
 
-    return root_dir, config
+    enroll_camera_cfg = config["enrollment"]["camera"]
+    enroll_face_detection_cfg = config["enrollment"]["face_detection"]
+    enroll_quality_cfg = config["enrollment"]["quality"]
+    enroll_stability_cfg = config["enrollment"]["stability"]
+    enroll_pose_cfg = config["enrollment"]["poses"]
+    enroll_performance_cfg = config["enrollment"]["performance"]
+
+    return enroll_camera_cfg, \
+        enroll_face_detection_cfg, \
+        enroll_quality_cfg, \
+        enroll_stability_cfg, \
+        enroll_pose_cfg, \
+        enroll_performance_cfg
