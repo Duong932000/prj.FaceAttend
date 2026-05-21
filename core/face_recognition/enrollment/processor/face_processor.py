@@ -24,7 +24,7 @@
 import time
 import threading
 from insightface.app import FaceAnalysis
-from core.face_recognition.utils.config import load_enrollment_config
+from core.face_recognition.utils.load_configs import load_enrollment_config
 from core.face_recognition.enrollment.processor.pose_validator import PoseValidator
 from core.face_recognition.enrollment.processor.quality_assessor import QualityAssessor
 from core.face_recognition.enrollment.processor.stability_tracker import StabilityTracker
@@ -36,9 +36,8 @@ class FaceProcessor:
         self.enroll_camera_cfg, \
         self.enroll_face_detection_cfg, \
         self.enroll_quality_cfg, \
-        self.enroll_stability_cfg, \
-        self.enroll_pose_cfg, \
-        self.enroll_performance_cfg \
+        self.enroll_stability_cfg, _, _, \
+        self.enroll_performance_cfg, _, _ \
             = load_enrollment_config()
 
         self.camera_stream = camera_stream

@@ -1,6 +1,6 @@
 
 import os
-from core.face_recognition.utils.config import _get_root_dir
+from core.face_recognition.utils.load_configs import _get_root_dir
 
 def asset_resources(relative_path):
 

@@ -56,11 +56,17 @@ def load_enrollment_config():
     enroll_quality_cfg = config["enrollment"]["quality"]
     enroll_stability_cfg = config["enrollment"]["stability"]
     enroll_pose_cfg = config["enrollment"]["poses"]
+    enroll_pipeline_cfg = config["enrollment"]["pipeline"]
     enroll_performance_cfg = config["enrollment"]["performance"]
+    enroll_color_detection_cfg = config["enrollment"]["color"]["detection"]
+    enroll_color_overlay_cfg = config["enrollment"]["color"]["overlay"]
 
     return enroll_camera_cfg, \
         enroll_face_detection_cfg, \
         enroll_quality_cfg, \
         enroll_stability_cfg, \
         enroll_pose_cfg, \
-        enroll_performance_cfg
+        enroll_pipeline_cfg, \
+        enroll_performance_cfg, \
+        enroll_color_detection_cfg, \
+        enroll_color_overlay_cfg

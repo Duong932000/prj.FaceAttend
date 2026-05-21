@@ -28,7 +28,7 @@ import faiss
 import numpy as np
 from pathlib import Path
 from insightface.app import FaceAnalysis
-from core.face_recognition.utils.config import load_common_config
+from core.face_recognition.utils.load_configs import load_common_config
 
 class RealtimeInference:
     def __init__(self):

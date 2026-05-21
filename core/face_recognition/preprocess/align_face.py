@@ -26,7 +26,7 @@ from pathlib import Path
 import onnxruntime as ort
 from insightface.app import FaceAnalysis
 from insightface.utils import face_align
-from core.face_recognition.utils.config import load_common_config
+from core.face_recognition.utils.load_configs import load_common_config
 
 
 class FaceAlignment:

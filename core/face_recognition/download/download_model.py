@@ -26,7 +26,7 @@ import zipfile
 import requests
 from tqdm import tqdm
 from pathlib import Path
-from core.face_recognition.utils.config import load_common_config
+from core.face_recognition.utils.load_configs import load_common_config
 
 class ModelDownloader:
 

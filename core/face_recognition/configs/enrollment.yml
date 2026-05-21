@@ -27,7 +27,7 @@ enrollment:
     yaw_std_max: 3
     pitch_std_max: 3
 
-  workflow:
+  poses:
 
     required_poses:
       - front
@@ -40,49 +40,23 @@ enrollment:
       - mask
       - glasses
 
-  poses:
-
-    front:
-      yaw_min: -10
-      yaw_max: 10
-      pitch_min: -10
-      pitch_max: 10
-
-    left:
-      yaw_min: -45
-      yaw_max: -18
-      pitch_min: -12
-      pitch_max: 12
-
-    right:
-      yaw_min: 18
-      yaw_max: 45
-      pitch_min: -12
-      pitch_max: 12
-
-    up:
-      yaw_min: -12
-      yaw_max: 12
-      pitch_min: 15
-      pitch_max: 35
-
-    down:
-      yaw_min: -12
-      yaw_max: 12
-      pitch_min: -35
-      pitch_max: -15
-
-    mask:
-      yaw_min: -12
-      yaw_max: 12
-      pitch_min: -12
-      pitch_max: 12
-
-    glasses:
-      yaw_min: -12
-      yaw_max: 12
-      pitch_min: -12
-      pitch_max: 12
+  pipeline:
+    - Align Face
+    - Generate Embedding
+    - Build FAISS Index
+    - Generate dataset report
 
   performance:
     inference_sleep_sec: 0.03
+
+  color:
+    detection:
+      bbox:
+        green: [0, 255, 0]    # green
+        orange: [0, 165, 255] # orange
+        red: [0, 0, 255]      # red
+
+    overlay:
+      fps: [0, 255, 0]    # green
+      guide: [0, 255, 0]  # green
+      text: [0, 255, 0]   # green
