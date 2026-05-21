@@ -24,52 +24,30 @@
 import cv2
 import numpy as np
 
-
 class QualityAssessor:
-
     def __init__(self, quality_cfg):
 
         self.blur_threshold = quality_cfg["blur_threshold"]
-
         self.brightness_min = quality_cfg["brightness_min"]
-
         self.brightness_max = quality_cfg["brightness_max"]
 
-    # =========================================================
-    # QUALITY EVALUATION
-    # =========================================================
     def evaluate(self, face_crop):
 
-        gray = cv2.cvtColor(
-            face_crop,
-            cv2.COLOR_BGR2GRAY
-        )
+        gray = cv2.cvtColor(face_crop, cv2.COLOR_BGR2GRAY)
+        
+        # blur score
+        blur_score = cv2.Laplacian(gray, cv2.CV_64F).var()
 
-        # =====================================================
-        # BLUR SCORE
-        # =====================================================
-        blur \
-            = cv2.Laplacian(
-                gray,
-                cv2.CV_64F
-            ).var()
+        # brightness core
+        brightness_score = np.mean(gray)
 
-        # =====================================================
-        # BRIGHTNESS SCORE
-        # =====================================================
-        brightness = np.mean(gray)
+        blur_ok = blur_score > self.blur_threshold
 
-        blur_ok = blur > self.blur_threshold
-
-        brightness_ok = (
-            self.brightness_min
-            < brightness
-            < self.brightness_max
-        )
+        brightness_ok = (self.brightness_min < brightness_score < self.brightness_max)
 
         return {
-            "blur": float(blur),
-            "brightness": float(brightness),
+            "blur": float(blur_score),
+            "brightness": float(brightness_score),
             "blur_ok": blur_ok,
             "brightness_ok": brightness_ok,
             "valid": (blur_ok and brightness_ok)
