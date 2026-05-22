@@ -30,13 +30,13 @@ class CameraStream:
         self.camera_id = camera_cfg["camera_id"]
         self.width = camera_cfg["width"]
         self.height = camera_cfg["height"]
+        self.fps = camera_cfg["fps"]
 
         # video capture
         self.video_capture = cv2.VideoCapture(self.camera_id)
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-
-        # Optional
+        self.video_capture.set(cv2.CAP_PROP_FPS, self.fps)
         self.video_capture.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
         # threading control
