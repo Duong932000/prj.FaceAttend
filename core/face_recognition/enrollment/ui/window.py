@@ -242,10 +242,10 @@ class MainWindow(customtkinter.CTk):
         self.processing_panel.grid_columnconfigure(0, weight=1)
 
         # processing panel
-        self.controll_panel = customtkinter.CTkFrame(self, width=400, corner_radius=20)
-        self.controll_panel.grid(row=0, column=3, padx=(5, 10), pady=10, sticky="nsew")
-        self.controll_panel.grid_rowconfigure(0, weight=1)
-        self.controll_panel.grid_columnconfigure(0, weight=1)
+        self.control_panel = customtkinter.CTkFrame(self, width=400, corner_radius=20)
+        self.control_panel.grid(row=0, column=3, padx=(5, 10), pady=10, sticky="nsew")
+        self.control_panel.grid_rowconfigure(0, weight=1)
+        self.control_panel.grid_columnconfigure(0, weight=1)
 
         self.protocol("WM_DELETE_WINDOW",self.closeApplication)
 
@@ -377,7 +377,7 @@ class MainWindow(customtkinter.CTk):
     def controlPanelConfigure(self):
 
         # tabview configure
-        self.control_tabview = customtkinter.CTkTabview(self.controll_panel)
+        self.control_tabview = customtkinter.CTkTabview(self.control_panel)
         self.control_tabview.grid(row=0, column=0, padx=15, pady=15, sticky="nsew")
         self.control_tabview.add("Webcam")
         self.control_tabview.add("Upload")
@@ -391,18 +391,23 @@ class MainWindow(customtkinter.CTk):
         self.uploadTabConfigure()
 
     def webcamTabConfigure(self):
-        
+
+        # define scroll frame
+        self.webcame_scroll_frame \
+            = customtkinter.CTkScrollableFrame(self.webcam_tab, corner_radius=10)
+        self.webcame_scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+
         # ----- USER INFORMATION ----- #
         # User information label
         self.userinfo_label \
-            = customtkinter.CTkLabel(self.webcam_tab,
+            = customtkinter.CTkLabel(self.webcame_scroll_frame,
                                      text="✓ User Information:",
                                      font=customtkinter.CTkFont(size=18, weight="bold"))
         self.userinfo_label.pack(anchor="w", padx=10, pady=(15, 10))
 
         # Name entry
         self.name_entry \
-            = customtkinter.CTkEntry(self.webcam_tab,
+            = customtkinter.CTkEntry(self.webcame_scroll_frame,
                                     placeholder_text="Enter name")
         self.name_entry.pack(fill="x", padx=10, pady=5)
 
@@ -410,14 +415,14 @@ class MainWindow(customtkinter.CTk):
         # ----- OUTPUT DIRECTORY ----- #
         # Dataset output path label
         self.dataset_output_label \
-            = customtkinter.CTkLabel(self.webcam_tab,
+            = customtkinter.CTkLabel(self.webcame_scroll_frame,
                                      text="✓ Output Directory:",
                                      font=customtkinter.CTkFont(size=18, weight="bold"))
         self.dataset_output_label.pack(anchor="w", padx=10, pady=(15, 10))
 
         # Dataset output path entry
         self.dataset_output_entry \
-            = customtkinter.CTkEntry(self.webcam_tab,
+            = customtkinter.CTkEntry(self.webcame_scroll_frame,
                                      placeholder_text="*default: ./output/face_recognition/datasets")
         self.dataset_output_entry.pack(fill="x", padx=10, pady=5)
 
@@ -425,32 +430,32 @@ class MainWindow(customtkinter.CTk):
         # ----- FACE COLLECTION OPTIONS ----- #
         # Face Collection Options
         self.option_label \
-            = customtkinter.CTkLabel(self.webcam_tab,
+            = customtkinter.CTkLabel(self.webcame_scroll_frame,
                                      text="✓ Face Collection Options",
                                      font=customtkinter.CTkFont( size=18, weight="bold"))
         self.option_label.pack(anchor="w", padx=10, pady=(10, 5))
 
         # Show collection options
         self.collection_options \
-            = FaceCollectionOptions(self.webcam_tab, width=250, height=370)
+            = FaceCollectionOptions(self.webcame_scroll_frame, width=250, height=370)
         self.collection_options.pack(fill="x", expand=False, padx=10, pady=5)
  
 
         # ----- ENROLLMENT PIPELINE OPTIONS ----- #
         # enrollment pipeline label
         self.pipeline_label \
-            = customtkinter.CTkLabel(self.webcam_tab,
+            = customtkinter.CTkLabel(self.webcame_scroll_frame,
                                      text="✓ Enrollment Pipeline",
                                      font=customtkinter.CTkFont(size=18,weight="bold"))
         self.pipeline_label.pack(anchor="w", padx=10, pady=(15, 5))
 
         # pipeline options
-        self.pipeline_options = EnrollmentPipeline(self.webcam_tab)
+        self.pipeline_options = EnrollmentPipeline(self.webcame_scroll_frame)
         self.pipeline_options.pack(fill="x", padx=10, pady=(0, 10))
 
         # ----- FACE DETECTION ----- #
         self.start_detection_button \
-            = customtkinter.CTkButton(self.webcam_tab,
+            = customtkinter.CTkButton(self.webcame_scroll_frame,
                                       text="Start Face Detection",
                                       command=self.startFaceDetection,
                                       height=45,
@@ -458,7 +463,7 @@ class MainWindow(customtkinter.CTk):
         self.start_detection_button.pack(fill="x", padx=10, pady=(20, 10))
 
         # self.stop_detection_button \
-        #     = customtkinter.CTkButton(self.webcam_tab,
+        #     = customtkinter.CTkButton(self.webcame_scroll_frame,
         #                               text="Stop Face Detection",
         #                               command=self.stopFaceDetection,
         #                               height=45,
@@ -471,7 +476,7 @@ class MainWindow(customtkinter.CTk):
         # ----- START ENROLLMENT ----- #
         # Start Enrollment button
         self.start_button \
-            = customtkinter.CTkButton(self.webcam_tab,
+            = customtkinter.CTkButton(self.webcame_scroll_frame,
                                       text="Start Enrollment",
                                       command=self.startEnrollment,
                                       width=40,
