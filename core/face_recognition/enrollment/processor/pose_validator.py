@@ -37,6 +37,5 @@ class PoseValidator:
 
         return (
             pose_cfg["yaw_min"] <= yaw <= pose_cfg["yaw_max"]
-            and
-            pose_cfg["pitch_min"] <= pitch <= pose_cfg["pitch_max"]
+            and pose_cfg["pitch_min"] <= pitch <= pose_cfg["pitch_max"]
         )

@@ -22,6 +22,7 @@
 
 
 import cv2
+import time
 import threading
 
 class CameraStream:
@@ -47,6 +48,10 @@ class CameraStream:
         self.frame = None
         self.lock = threading.Lock()
 
+        self.capture_fps = 0.0
+        self._fps_alpha = 0.1
+        self._last_capture_time = None
+
     def start(self):
 
         if self.running:
@@ -59,15 +64,31 @@ class CameraStream:
 
     def update(self):
 
+        min_sleep = 0.001
         while self.running:
             ret, frame = self.video_capture.read()
             if not ret:
+                time.sleep(min_sleep)
                 continue
-
+                
             frame = cv2.flip(frame, 1)
+
+            now = time.time()
+            if self._last_capture_time is not None:
+                dt = now - self._last_capture_time
+                if dt > 0:
+                    instant_fps = 1.0 / dt
+                    if self.capture_fps <= 0:
+                        self.capture_fps = instant_fps
+                    else:
+                        self.capture_fps = ((1- self._fps_alpha) * self.capture_fps + self._fps_alpha * instant_fps)
+            
+            self._last_capture_time = now
 
             with self.lock:
                 self.frame = frame
+            
+            time.sleep(min_sleep)
 
     def get_latest_frame(self):
 

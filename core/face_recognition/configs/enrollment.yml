@@ -60,3 +60,8 @@ enrollment:
       fps: [0, 255, 0]    # green
       guide: [0, 255, 0]  # green
       text: [0, 255, 0]   # green
+
+  app_mode:
+    idle: “idle”
+    detection: "detection"
+    enrollment: "enrollment"

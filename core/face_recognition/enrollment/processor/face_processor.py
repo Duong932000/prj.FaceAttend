@@ -37,10 +37,11 @@ class FaceProcessor:
         self.enroll_face_detection_cfg, \
         self.enroll_quality_cfg, \
         self.enroll_stability_cfg, _, _, \
-        self.enroll_performance_cfg, _, _ \
+        self.enroll_performance_cfg, _, _, _ \
             = load_enrollment_config()
 
         self.camera_stream = camera_stream
+
         self.target_pose = "front"
         self.latest_result = None
         self.running = False
@@ -48,13 +49,9 @@ class FaceProcessor:
 
         self.result_lock = threading.Lock()
 
-        # Pose Validator module
+        # modules
         self.pose_validator = PoseValidator(self.enroll_camera_cfg)
-
-        # Stability Tracker module
         self.stability_tracker = StabilityTracker(self.enroll_stability_cfg)
-
-        # Quality Assessor module
         self.quality_assessor = QualityAssessor(self.enroll_quality_cfg)
 
         # Face analysis
@@ -62,6 +59,10 @@ class FaceProcessor:
 
         self.face_analysis.prepare(ctx_id=self.enroll_face_detection_cfg["ctx_id"],
                                    det_size=tuple(self.enroll_face_detection_cfg["det_size"]))
+
+        self.inference_fps = 0.0
+        self._fps_alpha = 0.1
+        self._last_infer_time = None
 
     def start(self):
 
@@ -84,6 +85,8 @@ class FaceProcessor:
             self.latest_result = None
 
         self.stability_tracker.reset()
+        self.inference_fps = 0.0
+        self._last_infer_time = None
 
     def get_latest_result(self):
 
@@ -93,6 +96,20 @@ class FaceProcessor:
                 return None
 
             return self.latest_result.copy()
+
+    def update_inference_fps(self):
+
+        now = time.time()
+        if self._last_infer_time is not None:
+            dt = now - self._last_infer_time
+            if dt > 0:
+                instant_fps = 1.0 / dt
+                if self.inference_fps <= 0:
+                    self.inference_fps = instant_fps
+                else:
+                    self.inference_fps = ((1 - self._fps_alpha) * self.inference_fps + self._fps_alpha * instant_fps)
+        
+        self._last_infer_time = now
 
     def process_loop(self):
 
@@ -109,6 +126,7 @@ class FaceProcessor:
                 continue
 
             faces = self.face_analysis.get(frame)
+            self.update_inference_fps()
 
             result = {
                 "frame": frame,
@@ -127,17 +145,14 @@ class FaceProcessor:
                 continue
 
             face = faces[0]
-
             result["face_detected"] = True
             result["face"] = face
 
             x1, y1, x2, y2 = face.bbox.astype(int)
 
             h, w, _ = frame.shape
-
             x1 = max(0, x1)
             y1 = max(0, y1)
-
             x2 = min(w, x2)
             y2 = min(h, y2)
 
@@ -150,7 +165,7 @@ class FaceProcessor:
                     self.latest_result = result
                 time.sleep(inference_sleep)
                 continue
-            
+
             # face crop
             face_crop = frame[y1:y2, x1:x2]
             if face_crop.size == 0:
@@ -158,19 +173,11 @@ class FaceProcessor:
                     self.latest_result = result
                 time.sleep(inference_sleep)
                 continue
-            
-            # quality check
-            quality = self.quality_assessor.evaluate(face_crop)
-            result["quality"] = quality
 
-            # stability
+            result["quality"] = self.quality_assessor.evaluate(face_crop)
             self.stability_tracker.update(face)
-            stable = self.stability_tracker.is_stable()
-            result["stable"] = stable
-
-            # Pose validator
-            pose_valid = self.pose_validator.validate(face,self.target_pose)
-            result["pose_valid"] = pose_valid
+            result["stable"] = self.stability_tracker.is_stable()
+            result["pose_valid"] = self.pose_validator.validate(face, self.target_pose)
 
             # save result
             with self.result_lock:

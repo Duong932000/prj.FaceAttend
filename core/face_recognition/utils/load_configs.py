@@ -60,7 +60,9 @@ def load_enrollment_config():
     enroll_performance_cfg = config["enrollment"]["performance"]
     enroll_color_detection_cfg = config["enrollment"]["color"]["detection"]
     enroll_color_overlay_cfg = config["enrollment"]["color"]["overlay"]
+    enroll_app_mode_cfg = config["enrollment"]["app_mode"]
 
+    # return: 10 args
     return enroll_camera_cfg, \
         enroll_face_detection_cfg, \
         enroll_quality_cfg, \
@@ -69,4 +71,5 @@ def load_enrollment_config():
         enroll_pipeline_cfg, \
         enroll_performance_cfg, \
         enroll_color_detection_cfg, \
-        enroll_color_overlay_cfg
+        enroll_color_overlay_cfg, \
+        enroll_app_mode_cfg
