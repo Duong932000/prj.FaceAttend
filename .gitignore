@@ -20,5 +20,5 @@ __pycache__/
 # training output
 output/
 
-# model extension
-*.pth
+# model output
+mdl/
